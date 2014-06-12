@@ -11,6 +11,13 @@
 h1 		{ font: bold 20px arial }
 body 	{ font: normal 14px Calibri; line-height: 130%; }
 
+.boxGeneric { border: 1px solid #ccc; padding: 10px; margin: 8px 0; background: #eee; }
+.boxPortrait { background: #fff; width: 150px; height: 150px; margin: 5px; overflow: hidden; border: 1px solid #ccc; display: inline-block; cursor: pointer; }
+.boxPortrait img { width: 100%; }
+
+#boxCommandType 	{}
+#boxMobType 		{ display: none; }
+
 
 #txtResult	{ width: 80%; height: 50px; background: #333; color: #0f0; padding: 4px; border: 1px solid #000; }
 </style>
@@ -24,30 +31,25 @@ body 	{ font: normal 14px Calibri; line-height: 130%; }
 
 	<section>
 
-		<div id="boxCommandType">
+		<div id="boxCommandType" class="boxGeneric">
 			Select the type of command you want:<br/>
 			<input type="radio" id="radSpawner" name="radCmdType" value="spawner"><label for="radSpawner">Create Mob Spawner</label> &nbsp;
 			<input type="radio" id="radSummon" name="radCmdType" value="summon"><label for="radSummon">Summon Mob</label> &nbsp;
 			<input type="radio" id="radItem" name="radCmdType" value="item"><label for="radItem">Give Item</label> &nbsp;
-			<input type="radio" id="radPotion" name="radCmdType" value="potion"><label for="radPotion">Give Potion</label>
+			<input type="radio" id="radPotion" name="radCmdType" value="potion" disabled><label for="radPotion">Give Potion</label>
+		</div>
 
 
-
+		<div id="boxMobType"  class="boxGeneric">
+			Select the mob type:<br/>
 		</div>
 
 
 
-<hr/>
-
-
-
-		<div id="boxResult">
+		<div id="boxResult" class="boxGeneric">
 			<label for="txtResult">Command:</label><br/>
 			<textarea id="txtResult"></textarea>
 		</div>
-
-
-<hr />
 
 
 
@@ -58,7 +60,7 @@ body 	{ font: normal 14px Calibri; line-height: 130%; }
 	</section>
 
 	<footer>
-		&copy; 2014
+		version alpha 0.1
 	</footer>
 </body>
 
@@ -66,6 +68,34 @@ body 	{ font: normal 14px Calibri; line-height: 130%; }
 <script>
 var txtResult 	= document.getElementById("txtResult");
 var radType 	= document.getElementsByName("radCmdType");
+
+var mcCommand = new Object();
+
+
+
+
+function Mob(id, tooltip, picture) {
+	this.EntityId = id;
+	this.Tooltip = tooltip;
+	this.Picture = picture;
+}
+
+var mobList = [];
+mobList[0] = new Mob('Zombie', 'Zombie', 'zombie.png');
+mobList[1] = new Mob('Skeleton', 'Skeleton', 'skeleton.png');
+mobList[2] = new Mob('Spider', 'Spider', 'spider.png');
+mobList[3] = new Mob('CaveSpider', 'Cave Spider', 'cave_spider.png');
+mobList[4] = new Mob('Creeper', 'Creeper', 'crepper.png');
+mobList[5] = new Mob('Enderman', 'Enderman', 'enderman.png');
+mobList[6] = new Mob('VillagerGolem', 'Iron Golem', '150px-Village_Golem.png');
+mobList[7] = new Mob('Villager', 'Villager');
+mobList[8] = new Mob('Witch', 'Witch', 'witch.png');
+
+
+
+
+
+
 
 
 
@@ -80,25 +110,98 @@ function start() {
 		tempButton.attachEvent("click", generateCommand());
 	};
 
+	radType[0].addEventListener("click", function() { changeCommandType('spawner'); }, true);
+	radType[1].addEventListener("click", function() { changeCommandType('summon'); }, true);
+	radType[2].addEventListener("click", function() { changeCommandType('item'); }, true);
+	radType[3].addEventListener("click", function() { changeCommandType('potion'); }, true);
+
+
 
 	//-- Initial values
 	txtResult.value = '';
-	radType[0].checked = true;
+	changeCommandType('spawner');
+
+
+	//getValueFromRadio(radType)
 }
+
+
+function createMobSelector() {
+	var tgtBox = document.getElementById("boxMobType");
+	var mobBoxHtml = '';
+
+
+	tgtBox.innerHTML = '';
+
+	for (var i=0; i<mobList.length; i++) {
+		mobBoxHtml = "<div class='boxPortrait'>";
+		mobBoxHtml += "<img src='assets/images/" + mobList[i].Picture + "' alt='" + mobList[i].Tooltip + "' title='" + mobList[i].Tooltip + "' onclick='setMainMob(" + i + ")' />";
+		mobBoxHtml += "</div>";
+		tgtBox.innerHTML += mobBoxHtml;
+	}
+
+	mobBoxHtml = "<div class='boxPortrait'>";
+	mobBoxHtml += "*** CREATE NEW MOB***";
+	mobBoxHtml += "</div>";
+	tgtBox.innerHTML += mobBoxHtml;
+
+}
+
+
+
+
+
+function changeCommandType(type) {
+	mcCommand.Type = type;
+
+	switch(type) {
+		case 'spawner':
+			radType[0].checked = true;
+			document.getElementById("boxMobType").style.display = 'block';
+			createMobSelector();
+			break;
+
+		case 'summon':
+			radType[1].checked = true;
+			document.getElementById("boxMobType").style.display = 'block';
+			createMobSelector();
+			break;
+
+		case 'item':
+			radType[2].checked = true;
+			document.getElementById("boxMobType").style.display = 'none';
+			break;
+
+		case 'potion':
+			radType[3].checked = true;
+			document.getElementById("boxMobType").style.display = 'none';
+			break;
+
+		default:
+			mcCommand.type = "INVALID";
+	}
+}
+
+function setMainMob(index) {
+	mcCommand.MainMob = mobList[index];
+}
+
 
 
 function generateCommand() {
 	var cmd = '';
 
 	// Type of command
-	switch(getValueFromRadio(radType)) {
+	switch(mcCommand.Type) {
 		case 'spawner':
 			cmd = '/setblock ~ ~ ~ minecraft:mob_spawner 0 replace {';
+			cmd += 'EntityId:' + mcCommand.MainMob.EntityId;
 			cmd += '}';
 			break;
 
 		case 'summon':
 			cmd = '/summon ';
+			cmd += 'EntityId:' + mcCommand.MainMob.EntityId;
 			cmd += ' ~ ~ ~ {';
 			cmd += '}';
 			break;
