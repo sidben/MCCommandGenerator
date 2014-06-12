@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+
+<head>
+	<title>Minecraft Command Generator</title>
+	<meta charset="utf-8" />
+	<meta name="author" content="Sidney Benetti">
+
+<!-- TODO: CSS/LESS file -->
+<style type="text/css">
+h1 		{ font: bold 20px arial }
+body 	{ font: normal 14px Calibri; line-height: 130%; }
+
+
+#txtResult	{ width: 80%; height: 50px; background: #333; color: #0f0; padding: 4px; border: 1px solid #000; }
+</style>
+
+</head>
+
+<body>
+	<header>
+		<h1>Minecraft Command Generator</h1>
+	</header>
+
+	<section>
+
+		<div id="boxCommandType">
+			Select the type of command you want:<br/>
+			<input type="radio" id="radSpawner" name="radCmdType" value="spawner"><label for="radSpawner">Create Mob Spawner</label> &nbsp;
+			<input type="radio" id="radSummon" name="radCmdType" value="summon"><label for="radSummon">Summon Mob</label> &nbsp;
+			<input type="radio" id="radItem" name="radCmdType" value="item"><label for="radItem">Give Item</label> &nbsp;
+			<input type="radio" id="radPotion" name="radCmdType" value="potion"><label for="radPotion">Give Potion</label>
+
+
+
+		</div>
+
+
+
+<hr/>
+
+
+
+		<div id="boxResult">
+			<label for="txtResult">Command:</label><br/>
+			<textarea id="txtResult"></textarea>
+		</div>
+
+
+<hr />
+
+
+
+		<button id="btDebug" onclick="generateCommand();">TEST (create command)</button>
+
+
+
+	</section>
+
+	<footer>
+		&copy; 2014
+	</footer>
+</body>
+
+
+<script>
+var txtResult 	= document.getElementById("txtResult");
+var radType 	= document.getElementsByName("radCmdType");
+
+
+
+function start() {
+	var tempButton = document.getElementById("btDebug");
+
+
+	//--- Attach events
+	if(tempButton.addEventListener){
+		tempButton.addEventListener("click", generateCommand(), true);
+	}else{
+		tempButton.attachEvent("click", generateCommand());
+	};
+
+
+	//-- Initial values
+	txtResult.value = '';
+	radType[0].checked = true;
+}
+
+
+function generateCommand() {
+	var cmd = '';
+
+	// Type of command
+	switch(getValueFromRadio(radType)) {
+		case 'spawner':
+			cmd = '/setblock ~ ~ ~ minecraft:mob_spawner 0 replace {';
+			cmd += '}';
+			break;
+
+		case 'summon':
+			cmd = '/summon ';
+			cmd += ' ~ ~ ~ {';
+			cmd += '}';
+			break;
+
+		case 'item':
+			cmd = '/give @p ';
+			break;
+
+		case 'potion':
+			cmd = '/give @p ';
+			break;
+	}
+
+
+
+	txtResult.value = cmd;
+}
+
+
+
+
+function getValueFromRadio(element) {
+	for (var i=0; i<element.length; i++) {
+		if (element[i].checked) { return element[i].value; }
+	}
+	return '';
+}
+
+
+
+
+
+window.onload = start();
+
+
+
+</script>
+
+
+</html>
