@@ -17,6 +17,7 @@ body 	{ font: normal 14px Calibri; line-height: 130%; }
 
 #boxCommandType 	{}
 #boxMobType 		{ display: none; }
+#boxSpawnerCustomizer	{ display: none; }
 
 
 #txtResult	{ width: 80%; height: 50px; background: #333; color: #0f0; padding: 4px; border: 1px solid #000; }
@@ -41,9 +42,33 @@ body 	{ font: normal 14px Calibri; line-height: 130%; }
 
 
 		<div id="boxMobType"  class="boxGeneric">
-			Select the mob type:<br/>
 		</div>
 
+
+		<div id="boxSpawnerCustomizer"  class="boxGeneric">
+			<b>Spawner parameters:</b><br/>
+
+			<label for="txtSPWSpawnCount">Max amount of mobs per spawn:</label>
+			<input type='text' id='txtSPWSpawnCount' value='' /> <br/>
+
+			<label for="txtSPWSpawnRange">Spawn area range:</label>
+			<input type='text' id='txtSPWSpawnRange' value='4' /> <br/>
+
+			<label for="txtSPWDelayNext">Next spawn delay:</label>
+			<input type='text' id='txtSPWDelayNext' value='' /> ticks <br/>
+
+			<label for="txtSPWDelayMin">Min spawn delay:</label>
+			<input type='text' id='txtSPWDelayMin' value='' /> ticks <br/>
+
+			<label for="txtSPWDelayMax">Max spawn delay:</label>
+			<input type='text' id='txtSPWDelayMax' value='' /> ticks <br/>
+
+			<label for="txtSPWMaxMobs">Max amount of mobs around the spawner:</label>
+			<input type='text' id='txtSPWMaxMobs' value='' /><br/>
+
+			<label for="txtSPWPlayerRange">Activation range:</label>
+			<input type='text' id='txtSPWPlayerRange' value='' /><br/>
+		</div>
 
 
 		<div id="boxResult" class="boxGeneric">
@@ -110,16 +135,16 @@ function start() {
 		tempButton.attachEvent("click", generateCommand());
 	};
 
-	radType[0].addEventListener("click", function() { changeCommandType('spawner'); }, true);
-	radType[1].addEventListener("click", function() { changeCommandType('summon'); }, true);
-	radType[2].addEventListener("click", function() { changeCommandType('item'); }, true);
-	radType[3].addEventListener("click", function() { changeCommandType('potion'); }, true);
+	radType[0].addEventListener("click", function() { setCommandType('spawner'); }, true);
+	radType[1].addEventListener("click", function() { setCommandType('summon'); }, true);
+	radType[2].addEventListener("click", function() { setCommandType('item'); }, true);
+	radType[3].addEventListener("click", function() { setCommandType('potion'); }, true);
 
 
 
 	//-- Initial values
 	txtResult.value = '';
-	changeCommandType('spawner');
+	setCommandType('spawner');
 
 
 	//getValueFromRadio(radType)
@@ -131,7 +156,7 @@ function createMobSelector() {
 	var mobBoxHtml = '';
 
 
-	tgtBox.innerHTML = '';
+	tgtBox.innerHTML = "<b>Select the mob type:</b><br/>";
 
 	for (var i=0; i<mobList.length; i++) {
 		mobBoxHtml = "<div class='boxPortrait'>";
@@ -141,7 +166,7 @@ function createMobSelector() {
 	}
 
 	mobBoxHtml = "<div class='boxPortrait'>";
-	mobBoxHtml += "*** CREATE NEW MOB***";
+	mobBoxHtml += "*** CREATE NEW MOB (ToDo) ***";
 	mobBoxHtml += "</div>";
 	tgtBox.innerHTML += mobBoxHtml;
 
@@ -151,30 +176,34 @@ function createMobSelector() {
 
 
 
-function changeCommandType(type) {
+function setCommandType(type) {
 	mcCommand.Type = type;
 
 	switch(type) {
 		case 'spawner':
 			radType[0].checked = true;
 			document.getElementById("boxMobType").style.display = 'block';
+			document.getElementById("boxSpawnerCustomizer").style.display = 'block';
 			createMobSelector();
 			break;
 
 		case 'summon':
 			radType[1].checked = true;
 			document.getElementById("boxMobType").style.display = 'block';
+			document.getElementById("boxSpawnerCustomizer").style.display = 'none';
 			createMobSelector();
 			break;
 
 		case 'item':
 			radType[2].checked = true;
 			document.getElementById("boxMobType").style.display = 'none';
+			document.getElementById("boxSpawnerCustomizer").style.display = 'none';
 			break;
 
 		case 'potion':
 			radType[3].checked = true;
 			document.getElementById("boxMobType").style.display = 'none';
+			document.getElementById("boxSpawnerCustomizer").style.display = 'none';
 			break;
 
 		default:
@@ -194,10 +223,30 @@ function generateCommand() {
 	// Type of command
 	switch(mcCommand.Type) {
 		case 'spawner':
+			//--- parameter validation
+			if (mcCommand.MainMob === undefined) { showErrorMessage("No mob selected"); break; }
+
+			//--- local variables
+			var spawnCount = isNaN(document.getElementById("txtSPWSpawnCount").value) ? 0 : parseInt(document.getElementById("txtSPWSpawnCount").value);
+			var spawnRange = isNaN(document.getElementById("txtSPWSpawnRange").value) ? 0 : parseInt(document.getElementById("txtSPWSpawnRange").value);
+			var spawnDelay = isNaN(parseInt(document.getElementById("txtSPWDelayNext").value)) ? -99 : parseInt(document.getElementById("txtSPWDelayNext").value);
+			var spawnDelayMin = isNaN(parseInt(document.getElementById("txtSPWDelayMin").value)) ? -99 : parseInt(document.getElementById("txtSPWDelayMin").value);
+			var spawnDelayMax = isNaN(document.getElementById("txtSPWDelayMax").value) ? 0 : parseInt(document.getElementById("txtSPWDelayMax").value);
+			var spawnMaxMobs = isNaN(document.getElementById("txtSPWMaxMobs").value) ? 0 : parseInt(document.getElementById("txtSPWMaxMobs").value);
+			var spawnPlayerRange = isNaN(document.getElementById("txtSPWPlayerRange").value) ? 0 : parseInt(document.getElementById("txtSPWPlayerRange").value);
+
+			//--- command creation
 			cmd = '/setblock ~ ~ ~ minecraft:mob_spawner 0 replace {';
 			cmd += 'EntityId:' + mcCommand.MainMob.EntityId;
+			if (spawnCount > 0) { cmd += ', SpawnCount:' + spawnCount; }
+			if (spawnRange > 0 && spawnRange != 4) { cmd += ', SpawnRange:' + spawnRange; }
+			if (spawnDelay >= -1) { cmd += ', Delay:' + spawnDelay; }
+			if (spawnDelayMin >= 0 && spawnDelayMax > 0 && spawnDelayMax > spawnDelayMin) { cmd += ', MinSpawnDelay:'  + spawnDelayMin + ', MaxSpawnDelay:' + spawnDelayMax; }
+			if (spawnMaxMobs > 0 && spawnPlayerRange > 0) { cmd += ', MaxNearbyEntities:' + spawnMaxMobs + ', RequiredPlayerRange:' + spawnPlayerRange; }
 			cmd += '}';
+
 			break;
+
 
 		case 'summon':
 			cmd = '/summon ';
@@ -206,13 +255,16 @@ function generateCommand() {
 			cmd += '}';
 			break;
 
+
 		case 'item':
 			cmd = '/give @p ';
 			break;
 
+
 		case 'potion':
 			cmd = '/give @p ';
 			break;
+
 	}
 
 
@@ -230,6 +282,11 @@ function getValueFromRadio(element) {
 	return '';
 }
 
+
+
+function showErrorMessage(msg) {
+	alert("ERROR: " + msg);
+}
 
 
 
