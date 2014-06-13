@@ -19,6 +19,8 @@ body 	{ font: normal 14px Calibri; line-height: 130%; }
 #boxMobType 		{ display: none; }
 #boxSpawnerCustomizer	{ display: none; }
 
+.boxSelected		{ margin: 3px; border: 3px solid #0a0;}
+
 
 #txtResult	{ width: 80%; height: 50px; background: #333; color: #0f0; padding: 4px; border: 1px solid #000; }
 </style>
@@ -41,7 +43,7 @@ body 	{ font: normal 14px Calibri; line-height: 130%; }
 		</div>
 
 
-		<div id="boxMobType"  class="boxGeneric">
+		<div id="boxMobType" class="boxGeneric">
 		</div>
 
 
@@ -69,6 +71,9 @@ body 	{ font: normal 14px Calibri; line-height: 130%; }
 			<label for="txtSPWPlayerRange">Activation range:</label>
 			<input type='text' id='txtSPWPlayerRange' value='' /><br/>
 		</div>
+
+
+
 
 
 		<div id="boxResult" class="boxGeneric">
@@ -159,7 +164,7 @@ function createMobSelector() {
 	tgtBox.innerHTML = "<b>Select the mob type:</b><br/>";
 
 	for (var i=0; i<mobList.length; i++) {
-		mobBoxHtml = "<div class='boxPortrait'>";
+		mobBoxHtml = "<div class='boxPortrait' id='mob" + i + "'>";
 		mobBoxHtml += "<img src='assets/images/" + mobList[i].Picture + "' alt='" + mobList[i].Tooltip + "' title='" + mobList[i].Tooltip + "' onclick='setMainMob(" + i + ")' />";
 		mobBoxHtml += "</div>";
 		tgtBox.innerHTML += mobBoxHtml;
@@ -171,6 +176,7 @@ function createMobSelector() {
 	tgtBox.innerHTML += mobBoxHtml;
 
 }
+
 
 
 
@@ -211,8 +217,19 @@ function setCommandType(type) {
 	}
 }
 
+
+
 function setMainMob(index) {
+	// OBS: If in the future 'boxSelected' gets reused, change this to a loop on mobList
+	var currentSelectedList = document.getElementsByClassName('boxSelected');
+	for (var j=0; j<currentSelectedList.length; j++) {
+		currentSelectedList[j].className = currentSelectedList[j].className.replace('boxSelected', '');
+	}
+	document.getElementById("mob" + index).className += ' boxSelected';
+
+
 	mcCommand.MainMob = mobList[index];
+
 }
 
 
