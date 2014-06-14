@@ -1,0 +1,11 @@
+==========================================
+MC Command Generator
+==========================================
+
+
+alpha 0.1
+
+- added command type selector (spawner and summon);
+- added mob selector;
+- added spawner properties customizer;
+- added default values of spawner properties;
