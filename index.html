@@ -10,16 +10,42 @@
 <style type="text/css">
 h1 		{ font: bold 20px arial }
 body 	{ font: normal 14px Calibri; line-height: 130%; }
+*	 	{ box-sizing: border-box; }
 
 .boxGeneric { border: 1px solid #ccc; padding: 10px; margin: 8px 0; background: #eee; }
-.boxPortrait { background: #fff; width: 150px; height: 150px; margin: 5px; overflow: hidden; border: 1px solid #ccc; display: inline-block; cursor: pointer; }
-.boxPortrait img { width: 100%; }
+
+
+
+/*-- Mob Selector --*/
+#boxMobType 		{ display: none; }
+
+#boxMobType .boxMob { margin: 5px; padding: 0 0 10px; width: 160px; display: inline-block; vertical-align: top; }
+
+.boxMob .boxPortrait { background: #fff; width: 150px; height: 150px; margin: 2px auto; overflow: hidden; border: 1px solid #ccc; position: relative; cursor: pointer; }
+.boxMob .boxPortrait img { width: 100%; }
+.boxMob .mobName		{ background: rgba(200,200,200,0.85); color: #333; padding: 5px 10px; text-align: center; position: absolute; bottom: 4%; left: 0; width: 100%; display: none; }
+
+.boxMob .boxCommand { visibility: hidden; }
+.boxMob .boxCommand span {
+	background: #0051a7; background-repeat: no-repeat; background-position: 0px 0px;
+	border: 1px solid #0051a7; color: #fff;
+	width: 75px; padding: 3px 0 3px 32px; display: inline-block; margin: 1px 2px; cursor: pointer;
+}
+.boxMob .boxCommand .cmdSelect { background-image: url('assets/images/ico-select.png') }
+.boxMob .boxCommand .cmdEdit { background-image: url('assets/images/ico-edit.png'); }
+
+.boxMob:hover .mobName 		{ display: block; }
+.boxMob:hover .boxCommand 	{ visibility: visible; }
+
+.boxSelected .boxPortrait	{ border: 3px solid #0051a7;}
+
+
+
 
 #boxCommandType 	{}
-#boxMobType 		{ display: none; }
+#boxMobCustomizer		{ display: none; }
 #boxSpawnerCustomizer	{ display: none; }
 
-.boxSelected		{ margin: 3px; border: 3px solid #0a0;}
 
 
 #txtResult	{ width: 80%; height: 50px; background: #333; color: #0f0; padding: 4px; border: 1px solid #000; }
@@ -50,30 +76,31 @@ body 	{ font: normal 14px Calibri; line-height: 130%; }
 		<div id="boxSpawnerCustomizer"  class="boxGeneric">
 			<b>Spawner parameters:</b><br/>
 
-			<label for="txtSPWSpawnCount">Max amount of mobs per spawn:</label>
-			<input type='text' id='txtSPWSpawnCount' value='' /> <br/>
+			<label for="txtSPWSpawnCount" title="Max amount of mobs per spawn">SpawnCount:</label>
+			<input type='text' id='txtSPWSpawnCount' value='4' /> <br/>
 
-			<label for="txtSPWSpawnRange">Spawn area range:</label>
+			<label for="txtSPWSpawnRange" title="Spawn area range">SpawnRange:</label>
 			<input type='text' id='txtSPWSpawnRange' value='4' /> <br/>
 
-			<label for="txtSPWDelayNext">Next spawn delay:</label>
+			<label for="txtSPWDelayNext" title="Next spawn delay">Delay:</label>
 			<input type='text' id='txtSPWDelayNext' value='' /> ticks <br/>
 
-			<label for="txtSPWDelayMin">Min spawn delay:</label>
-			<input type='text' id='txtSPWDelayMin' value='' /> ticks <br/>
+			<label for="txtSPWDelayMin">MinSpawnDelay:</label>
+			<input type='text' id='txtSPWDelayMin' value='200' /> ticks <br/>
 
-			<label for="txtSPWDelayMax">Max spawn delay:</label>
-			<input type='text' id='txtSPWDelayMax' value='' /> ticks <br/>
+			<label for="txtSPWDelayMax">MaxSpawnDelay:</label>
+			<input type='text' id='txtSPWDelayMax' value='800' /> ticks <br/>
 
-			<label for="txtSPWMaxMobs">Max amount of mobs around the spawner:</label>
-			<input type='text' id='txtSPWMaxMobs' value='' /><br/>
+			<label for="txtSPWMaxMobs" title="Max amount of mobs around the spawner">MaxNearbyEntities:</label>
+			<input type='text' id='txtSPWMaxMobs' value='6' /><br/>
 
-			<label for="txtSPWPlayerRange">Activation range:</label>
-			<input type='text' id='txtSPWPlayerRange' value='' /><br/>
+			<label for="txtSPWPlayerRange" title="Activation range">RequiredPlayerRange:</label>
+			<input type='text' id='txtSPWPlayerRange' value='16' /><br/>
 		</div>
 
 
-
+		<div id="boxMobCustomizer" class="boxGeneric">
+		</div>
 
 
 		<div id="boxResult" class="boxGeneric">
@@ -90,7 +117,8 @@ body 	{ font: normal 14px Calibri; line-height: 130%; }
 	</section>
 
 	<footer>
-		version alpha 0.1
+		version alpha 0.1 <br/>
+		icons designed by <a href="http://flaticon.com/" target="_blank">Flaticon.com</a>
 	</footer>
 </body>
 
@@ -118,8 +146,9 @@ mobList[3] = new Mob('CaveSpider', 'Cave Spider', 'cave_spider.png');
 mobList[4] = new Mob('Creeper', 'Creeper', 'crepper.png');
 mobList[5] = new Mob('Enderman', 'Enderman', 'enderman.png');
 mobList[6] = new Mob('VillagerGolem', 'Iron Golem', '150px-Village_Golem.png');
-mobList[7] = new Mob('Villager', 'Villager');
+mobList[7] = new Mob('Blaze', 'Blaze', 'Blaze_(Icon).png');
 mobList[8] = new Mob('Witch', 'Witch', 'witch.png');
+//mobList[7] = new Mob('Villager', 'Villager');
 
 
 
@@ -156,12 +185,42 @@ function start() {
 }
 
 
-function createMobSelector() {
-	var tgtBox = document.getElementById("boxMobType");
+function createMobSelector(targetElement) {
 	var mobBoxHtml = '';
 
 
-	tgtBox.innerHTML = "<b>Select the mob type:</b><br/>";
+	targetElement.innerHTML = "<b>Select the mob type:</b><br/>";
+
+	for (var i=0; i<mobList.length; i++) {
+		mobBoxHtml = "<div class='boxMob' id='mob" + i + "'>";
+
+		mobBoxHtml += "<div class='boxPortrait' onclick='setMainMob(" + i + ")'>";
+		mobBoxHtml += "<img src='assets/images/" + mobList[i].Picture + "' alt='" + mobList[i].Tooltip + "' title='" + mobList[i].Tooltip + "' />";
+		mobBoxHtml += "<div class='mobName'>" + mobList[i].Tooltip + "</div>"
+		mobBoxHtml += "</div>";
+
+		mobBoxHtml += "<div class='boxCommand'>";
+		mobBoxHtml += "<span class='cmdSelect' onclick='setMainMob(" + i + ")'>Select</span>";
+		mobBoxHtml += "<span class='cmdEdit'>Edit</span>";
+		mobBoxHtml += "</div>";
+
+		mobBoxHtml += "</div>";
+		targetElement.innerHTML += mobBoxHtml;
+	}
+
+	// OBS 1: Create groups: vanilla (basic) mobs | Presets (?) | My mobs (saved locally)
+	// OBS 2: Add for each mob - SELECT | CUSTOMIZE
+}
+
+
+
+
+function createMobCustomizer(mobTyype) {
+	var tgtBox = document.getElementById("boxMobCustomizer");
+	var mobBoxHtml = '';
+
+
+	tgtBox.innerHTML = "<b>Customize your mob:</b><br/>";
 
 	for (var i=0; i<mobList.length; i++) {
 		mobBoxHtml = "<div class='boxPortrait' id='mob" + i + "'>";
@@ -170,14 +229,10 @@ function createMobSelector() {
 		tgtBox.innerHTML += mobBoxHtml;
 	}
 
-	mobBoxHtml = "<div class='boxPortrait'>";
-	mobBoxHtml += "*** CREATE NEW MOB (ToDo) ***";
-	mobBoxHtml += "</div>";
-	tgtBox.innerHTML += mobBoxHtml;
+
+	tgtBox.innerHTML += "Custom name: <input type='text' />"
 
 }
-
-
 
 
 
@@ -188,34 +243,64 @@ function setCommandType(type) {
 	switch(type) {
 		case 'spawner':
 			radType[0].checked = true;
-			document.getElementById("boxMobType").style.display = 'block';
-			document.getElementById("boxSpawnerCustomizer").style.display = 'block';
-			createMobSelector();
+			showPropertiesBox('spawnerBasic');
 			break;
 
 		case 'summon':
 			radType[1].checked = true;
-			document.getElementById("boxMobType").style.display = 'block';
-			document.getElementById("boxSpawnerCustomizer").style.display = 'none';
-			createMobSelector();
+			showPropertiesBox('summon');
 			break;
 
 		case 'item':
 			radType[2].checked = true;
-			document.getElementById("boxMobType").style.display = 'none';
-			document.getElementById("boxSpawnerCustomizer").style.display = 'none';
+			showPropertiesBox('item');		// ToDo
 			break;
 
 		case 'potion':
 			radType[3].checked = true;
-			document.getElementById("boxMobType").style.display = 'none';
-			document.getElementById("boxSpawnerCustomizer").style.display = 'none';
+			showPropertiesBox('potion');	// ToDo
 			break;
 
 		default:
 			mcCommand.type = "INVALID";
 	}
 }
+
+
+
+
+function showPropertiesBox(boxType) {
+	var bMobType 		= document.getElementById("boxMobType");
+	var bSpawnerProps 	= document.getElementById("boxSpawnerCustomizer");
+	var bMobProps 		= document.getElementById("boxMobCustomizer");
+
+
+	bMobType.style.display 			= 'none';
+	bSpawnerProps.style.display 	= 'none';
+	bMobProps.style.display 		= 'none';
+
+
+	switch(boxType) {
+		case 'spawnerBasic':
+			bMobType.style.display = 'block';
+			bSpawnerProps.style.display = 'block';
+			createMobSelector(bMobType);
+			break;
+
+		case 'spawnerCustom':
+			bMobProps.style.display = 'block';
+			bSpawnerProps.style.display = 'block';
+			createMobSelector(bMobProps);
+			break;
+
+		case 'summon':
+			bMobType.style.display = 'block';
+			createMobSelector(bMobType);
+			break;
+
+	}
+}
+
 
 
 
