@@ -81,25 +81,25 @@ footer	{ padding: 25px 10px 15px; text-align: center; font-size: 12px; color: #7
 			<b>Spawner parameters:</b><br/>
 
 			<label for="txtSPWSpawnCount" title="Max amount of mobs per spawn">SpawnCount:</label>
-			<input type='text' id='txtSPWSpawnCount' value='4' /> <br/>
+			<input type='text' id='txtSPWSpawnCount' /> <br/>
 
 			<label for="txtSPWSpawnRange" title="Spawn area range">SpawnRange:</label>
-			<input type='text' id='txtSPWSpawnRange' value='4' /> <br/>
+			<input type='text' id='txtSPWSpawnRange' /> <br/>
 
 			<label for="txtSPWDelayNext" title="Next spawn delay">Delay:</label>
-			<input type='text' id='txtSPWDelayNext' value='' /> ticks <br/>
+			<input type='text' id='txtSPWDelayNext' /> ticks <br/>
 
 			<label for="txtSPWDelayMin">MinSpawnDelay:</label>
-			<input type='text' id='txtSPWDelayMin' value='200' /> ticks <br/>
+			<input type='text' id='txtSPWDelayMin' /> ticks <br/>
 
 			<label for="txtSPWDelayMax">MaxSpawnDelay:</label>
-			<input type='text' id='txtSPWDelayMax' value='800' /> ticks <br/>
+			<input type='text' id='txtSPWDelayMax' /> ticks <br/>
 
 			<label for="txtSPWMaxMobs" title="Max amount of mobs around the spawner">MaxNearbyEntities:</label>
-			<input type='text' id='txtSPWMaxMobs' value='6' /><br/>
+			<input type='text' id='txtSPWMaxMobs' /><br/>
 
 			<label for="txtSPWPlayerRange" title="Activation range">RequiredPlayerRange:</label>
-			<input type='text' id='txtSPWPlayerRange' value='16' /><br/>
+			<input type='text' id='txtSPWPlayerRange' /><br/>
 		</div>
 
 
@@ -127,13 +127,20 @@ footer	{ padding: 25px 10px 15px; text-align: center; font-size: 12px; color: #7
 
 
 <script>
-var txtResult 	= document.getElementById("txtResult");
-var radType 	= document.getElementsByName("radCmdType");
+//--- CONTANSTS AND GLOBAL VARIABLES ---//
 
+var SPW_DEFAULT_SPAWNCOUNT 		= 4;
+var SPW_DEFAULT_SPAWNRANGE 		= 4;
+var SPW_DEFAULT_MINDELAY 		= 200;
+var SPW_DEFAULT_MAXDELAY 		= 800;
+var SPW_DEFAULT_MAXNEARBYMOBS 	= 6;
+var SPW_DEFAULT_PLAYERRANGE 	= 16;
+
+
+
+
+//--- CUSTOM OBJECTS ---//
 var mcCommand = new Object();
-
-
-
 
 function Mob(id, tooltip, picture, dftHealth) {
 	this.EntityId 		= id;
@@ -142,6 +149,9 @@ function Mob(id, tooltip, picture, dftHealth) {
 	this.DefaultHealth 	= dftHealth;
 }
 
+
+
+//--- INITIALIZATION ---//
 var mobList = [];
 mobList[0] = new Mob('Zombie', 'Zombie', 'zombie.png', 20);
 mobList[1] = new Mob('Skeleton', 'Skeleton', 'skeleton.png', 20);
@@ -157,6 +167,8 @@ mobList[8] = new Mob('Witch', 'Witch', 'witch.png', 26);
 
 
 
+var txtResult 	= document.getElementById("txtResult");
+var radType 	= document.getElementsByName("radCmdType");
 
 
 
@@ -187,6 +199,17 @@ function start() {
 
 	//getValueFromRadio(radType)
 }
+
+
+function initializeSpawnerProperties() {
+	document.getElementById("txtSPWSpawnCount").value = SPW_DEFAULT_SPAWNCOUNT;
+	document.getElementById("txtSPWSpawnRange").value = SPW_DEFAULT_SPAWNRANGE;
+	document.getElementById("txtSPWDelayMin").value = SPW_DEFAULT_MINDELAY;
+	document.getElementById("txtSPWDelayMax").value = SPW_DEFAULT_MAXDELAY;
+	document.getElementById("txtSPWMaxMobs").value = SPW_DEFAULT_MAXNEARBYMOBS;
+	document.getElementById("txtSPWPlayerRange").value = SPW_DEFAULT_PLAYERRANGE;
+}
+
 
 
 function createMobSelector(container) {
@@ -354,12 +377,14 @@ function showPropertiesBox(boxType) {
 		case 'spawnerBasic':
 			bMobType.style.display = 'block';
 			bSpawnerProps.style.display = 'block';
+			initializeSpawnerProperties();
 			createMobSelector(bMobType);
 			break;
 
 		case 'spawnerCustom':
 			bMobProps.style.display = 'block';
 			bSpawnerProps.style.display = 'block';
+			initializeSpawnerProperties();
 			createMobCustomizer(bMobProps);
 			break;
 
@@ -399,6 +424,7 @@ function setMainMob(index, customize) {
 function generateCommand() {
 	var cmd = '';
 
+
 	// Type of command
 	switch(mcCommand.Type) {
 		case 'spawner':
@@ -406,22 +432,26 @@ function generateCommand() {
 			if (mcCommand.MainMob === undefined) { showErrorMessage("No mob selected"); break; }
 
 			//--- local variables
-			var spawnCount = isNaN(document.getElementById("txtSPWSpawnCount").value) ? 0 : parseInt(document.getElementById("txtSPWSpawnCount").value);
-			var spawnRange = isNaN(document.getElementById("txtSPWSpawnRange").value) ? 0 : parseInt(document.getElementById("txtSPWSpawnRange").value);
+			var spawnCount = isNaN(document.getElementById("txtSPWSpawnCount").value) ? SPW_DEFAULT_SPAWNCOUNT : parseInt(document.getElementById("txtSPWSpawnCount").value);
+			var spawnRange = isNaN(document.getElementById("txtSPWSpawnRange").value) ? SPW_DEFAULT_SPAWNRANGE : parseInt(document.getElementById("txtSPWSpawnRange").value);
 			var spawnDelay = isNaN(parseInt(document.getElementById("txtSPWDelayNext").value)) ? -99 : parseInt(document.getElementById("txtSPWDelayNext").value);
-			var spawnDelayMin = isNaN(parseInt(document.getElementById("txtSPWDelayMin").value)) ? -99 : parseInt(document.getElementById("txtSPWDelayMin").value);
-			var spawnDelayMax = isNaN(document.getElementById("txtSPWDelayMax").value) ? 0 : parseInt(document.getElementById("txtSPWDelayMax").value);
-			var spawnMaxMobs = isNaN(document.getElementById("txtSPWMaxMobs").value) ? 0 : parseInt(document.getElementById("txtSPWMaxMobs").value);
-			var spawnPlayerRange = isNaN(document.getElementById("txtSPWPlayerRange").value) ? 0 : parseInt(document.getElementById("txtSPWPlayerRange").value);
+			var spawnDelayMin = isNaN(parseInt(document.getElementById("txtSPWDelayMin").value)) ? SPW_DEFAULT_MINDELAY : parseInt(document.getElementById("txtSPWDelayMin").value);
+			var spawnDelayMax = isNaN(document.getElementById("txtSPWDelayMax").value) ? SPW_DEFAULT_MAXDELAY : parseInt(document.getElementById("txtSPWDelayMax").value);
+			var spawnMaxMobs = isNaN(document.getElementById("txtSPWMaxMobs").value) ? SPW_DEFAULT_MAXNEARBYMOBS : parseInt(document.getElementById("txtSPWMaxMobs").value);
+			var spawnPlayerRange = isNaN(document.getElementById("txtSPWPlayerRange").value) ? SPW_DEFAULT_PLAYERRANGE : parseInt(document.getElementById("txtSPWPlayerRange").value);
 
 			//--- command creation
 			cmd = '/setblock ~ ~ ~ minecraft:mob_spawner 0 replace {';
 			cmd += 'EntityId:' + mcCommand.MainMob.EntityId;
-			if (spawnCount > 0) { cmd += ', SpawnCount:' + spawnCount; }
-			if (spawnRange > 0 && spawnRange != 4) { cmd += ', SpawnRange:' + spawnRange; }
+			if (spawnCount > 0 && spawnCount != SPW_DEFAULT_SPAWNCOUNT) { cmd += ', SpawnCount:' + spawnCount; }
+			if (spawnRange > 0 && spawnRange != SPW_DEFAULT_SPAWNRANGE) { cmd += ', SpawnRange:' + spawnRange; }
 			if (spawnDelay >= -1) { cmd += ', Delay:' + spawnDelay; }
-			if (spawnDelayMin >= 0 && spawnDelayMax > 0 && spawnDelayMax > spawnDelayMin) { cmd += ', MinSpawnDelay:'  + spawnDelayMin + ', MaxSpawnDelay:' + spawnDelayMax; }
-			if (spawnMaxMobs > 0 && spawnPlayerRange > 0) { cmd += ', MaxNearbyEntities:' + spawnMaxMobs + ', RequiredPlayerRange:' + spawnPlayerRange; }
+			if (spawnDelayMin >= 0 && spawnDelayMax > 0 && spawnDelayMax > spawnDelayMin) {
+				if (spawnDelayMin != SPW_DEFAULT_MINDELAY) cmd += ', MinSpawnDelay:' + spawnDelayMin
+				if (spawnDelayMax != SPW_DEFAULT_MAXDELAY) cmd += ', MaxSpawnDelay:' + spawnDelayMax;
+				// TODO: TEST INGAME IF WORKS WITH JUST 1 PROPERTY SET
+			}
+			if (spawnMaxMobs > 0 && spawnPlayerRange > 0 && spawnMaxMobs != SPW_DEFAULT_MAXNEARBYMOBS && spawnPlayerRange != SPW_DEFAULT_PLAYERRANGE) { cmd += ', MaxNearbyEntities:' + spawnMaxMobs + ', RequiredPlayerRange:' + spawnPlayerRange; }
 			cmd += '}';
 
 			break;
