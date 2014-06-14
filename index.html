@@ -459,9 +459,10 @@ function generateCommand() {
 
 		case 'summon':
 			cmd = '/summon ';
-			cmd += 'EntityId:' + mcCommand.MainMob.EntityId;
-			cmd += ' ~ ~ ~ {';
-			cmd += '}';
+			cmd += mcCommand.MainMob.EntityId;
+			cmd += ' ~ ~ ~ ';
+			// cmd += '{';
+			// cmd += '}';
 			break;
 
 
