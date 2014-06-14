@@ -107,7 +107,7 @@ footer	{ padding: 25px 10px 15px; text-align: center; font-size: 12px; color: #7
 
 		<div id="boxResult" class="boxGeneric">
 			<label for="txtResult">Command:</label><br/>
-			<textarea id="txtResult"></textarea>
+			<textarea id="txtResult" onclick="this.select()"></textarea>
 		</div>
 
 
@@ -126,21 +126,16 @@ footer	{ padding: 25px 10px 15px; text-align: center; font-size: 12px; color: #7
 </body>
 
 
+
+<script type="text/javascript" src="assets/js/objects.js"></script>
 <script>
 //--- CONTANSTS AND GLOBAL VARIABLES ---//
 
-var SPW_DEFAULT_SPAWNCOUNT 		= 4;
-var SPW_DEFAULT_SPAWNRANGE 		= 4;
-var SPW_DEFAULT_MINDELAY 		= 200;
-var SPW_DEFAULT_MAXDELAY 		= 800;
-var SPW_DEFAULT_MAXNEARBYMOBS 	= 6;
-var SPW_DEFAULT_PLAYERRANGE 	= 16;
-
+var mcCommand = new MinecraftCommand('spawner');
 
 
 
 //--- CUSTOM OBJECTS ---//
-var mcCommand = new Object();
 
 function Mob(id, tooltip, picture, dftHealth) {
 	this.EntityId 		= id;
@@ -208,6 +203,28 @@ function initializeSpawnerProperties() {
 	document.getElementById("txtSPWDelayMax").value = SPW_DEFAULT_MAXDELAY;
 	document.getElementById("txtSPWMaxMobs").value = SPW_DEFAULT_MAXNEARBYMOBS;
 	document.getElementById("txtSPWPlayerRange").value = SPW_DEFAULT_PLAYERRANGE;
+}
+
+
+
+// Captures the values of the form and send it to the command internal object.
+function captureForm() {
+
+	//--- capture mob spawner propeties ---//
+	if (mcCommand.NBTInfo instanceof MinecraftMobSpawner) {
+
+mcCommand.NBTInfo.EntityId = 'Zombie';	// !!TEMP!!
+
+
+		mcCommand.NBTInfo.SpawnCount 			= parseInt(document.getElementById("txtSPWSpawnCount").value);
+		mcCommand.NBTInfo.SpawnRange 			= parseInt(document.getElementById("txtSPWSpawnRange").value);
+		mcCommand.NBTInfo.Delay 				= parseInt(document.getElementById("txtSPWDelayNext").value);
+		mcCommand.NBTInfo.MinSpawnDelay 		= parseInt(document.getElementById("txtSPWDelayMin").value);
+		mcCommand.NBTInfo.MaxSpawnDelay 		= parseInt(document.getElementById("txtSPWDelayMax").value);
+		mcCommand.NBTInfo.MaxNearbyEntities 	= parseInt(document.getElementById("txtSPWMaxMobs").value);
+		mcCommand.NBTInfo.RequiredPlayerRange 	= parseInt(document.getElementById("txtSPWPlayerRange").value);
+	}
+
 }
 
 
@@ -335,6 +352,8 @@ function setCommandType(type) {
 
 	switch(type) {
 		case 'spawner':
+			mcCommand.NBTInfo = new MinecraftMobSpawner();
+
 			radType[0].checked = true;
 			showPropertiesBox('spawnerBasic');
 			break;
@@ -422,64 +441,11 @@ function setMainMob(index, customize) {
 
 
 function generateCommand() {
-	var cmd = '';
+	// DEBUG //
+	console.log(JSON.stringify(mcCommand));
 
-
-	// Type of command
-	switch(mcCommand.Type) {
-		case 'spawner':
-			//--- validation
-			if (mcCommand.MainMob === undefined) { showErrorMessage("No mob selected"); break; }
-
-			//--- local variables
-			var spawnCount = isNaN(document.getElementById("txtSPWSpawnCount").value) ? SPW_DEFAULT_SPAWNCOUNT : parseInt(document.getElementById("txtSPWSpawnCount").value);
-			var spawnRange = isNaN(document.getElementById("txtSPWSpawnRange").value) ? SPW_DEFAULT_SPAWNRANGE : parseInt(document.getElementById("txtSPWSpawnRange").value);
-			var spawnDelay = isNaN(parseInt(document.getElementById("txtSPWDelayNext").value)) ? -99 : parseInt(document.getElementById("txtSPWDelayNext").value);
-			var spawnDelayMin = isNaN(parseInt(document.getElementById("txtSPWDelayMin").value)) ? SPW_DEFAULT_MINDELAY : parseInt(document.getElementById("txtSPWDelayMin").value);
-			var spawnDelayMax = isNaN(document.getElementById("txtSPWDelayMax").value) ? SPW_DEFAULT_MAXDELAY : parseInt(document.getElementById("txtSPWDelayMax").value);
-			var spawnMaxMobs = isNaN(document.getElementById("txtSPWMaxMobs").value) ? SPW_DEFAULT_MAXNEARBYMOBS : parseInt(document.getElementById("txtSPWMaxMobs").value);
-			var spawnPlayerRange = isNaN(document.getElementById("txtSPWPlayerRange").value) ? SPW_DEFAULT_PLAYERRANGE : parseInt(document.getElementById("txtSPWPlayerRange").value);
-
-			//--- command creation
-			cmd = '/setblock ~ ~ ~ minecraft:mob_spawner 0 replace {';
-			cmd += 'EntityId:' + mcCommand.MainMob.EntityId;
-			if (spawnCount > 0 && spawnCount != SPW_DEFAULT_SPAWNCOUNT) { cmd += ', SpawnCount:' + spawnCount; }
-			if (spawnRange > 0 && spawnRange != SPW_DEFAULT_SPAWNRANGE) { cmd += ', SpawnRange:' + spawnRange; }
-			if (spawnDelay >= -1) { cmd += ', Delay:' + spawnDelay; }
-			if (spawnDelayMin >= 0 && spawnDelayMax > 0 && spawnDelayMax > spawnDelayMin) {
-				if (spawnDelayMin != SPW_DEFAULT_MINDELAY) cmd += ', MinSpawnDelay:' + spawnDelayMin
-				if (spawnDelayMax != SPW_DEFAULT_MAXDELAY) cmd += ', MaxSpawnDelay:' + spawnDelayMax;
-				// TODO: TEST INGAME IF WORKS WITH JUST 1 PROPERTY SET
-			}
-			if (spawnMaxMobs > 0 && spawnPlayerRange > 0 && spawnMaxMobs != SPW_DEFAULT_MAXNEARBYMOBS && spawnPlayerRange != SPW_DEFAULT_PLAYERRANGE) { cmd += ', MaxNearbyEntities:' + spawnMaxMobs + ', RequiredPlayerRange:' + spawnPlayerRange; }
-			cmd += '}';
-
-			break;
-
-
-		case 'summon':
-			cmd = '/summon ';
-			cmd += mcCommand.MainMob.EntityId;
-			cmd += ' ~ ~ ~ ';
-			// cmd += '{';
-			// cmd += '}';
-			break;
-
-
-		case 'item':
-			cmd = '/give @p ';
-			break;
-
-
-		case 'potion':
-			cmd = '/give @p ';
-			break;
-
-	}
-
-
-
-	txtResult.value = cmd;
+	captureForm();
+	txtResult.value = mcCommand.getCommand();
 }
 
 
