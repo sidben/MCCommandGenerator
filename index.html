@@ -25,6 +25,8 @@
 		</div>
 
 
+		<input type="hidden" id="hfdCurrentMob" />
+
 		<div id="boxMobType" class="boxGeneric">
 		</div>
 		<div id="boxMobCustomizer" class="boxGeneric">
@@ -66,7 +68,7 @@
 
 
 
-		<button id="btDebug" onclick="generateCommand();">TEST (create command)</button>
+		<button id="btDebug">TEST (create command)</button>
 
 
 
@@ -91,27 +93,9 @@ var mcCommand = new MinecraftCommand('spawner');
 
 //--- CUSTOM OBJECTS ---//
 
-function Mob(id, tooltip, picture, dftHealth) {
-	this.EntityId 		= id;
-	this.Tooltip 		= tooltip;
-	this.Picture 		= picture;
-	this.DefaultHealth 	= dftHealth;
-}
-
 
 
 //--- INITIALIZATION ---//
-var mobList = [];
-mobList[0] = new Mob('Zombie', 'Zombie', 'zombie.png', 20);
-mobList[1] = new Mob('Skeleton', 'Skeleton', 'skeleton.png', 20);
-mobList[2] = new Mob('Spider', 'Spider', 'spider.png', 16);
-mobList[3] = new Mob('CaveSpider', 'Cave Spider', 'cave_spider.png', 12);
-mobList[4] = new Mob('Creeper', 'Creeper', 'crepper.png', 20);
-mobList[5] = new Mob('Enderman', 'Enderman', 'enderman.png', 40);
-mobList[6] = new Mob('VillagerGolem', 'Iron Golem', '150px-Village_Golem.png', 100);
-mobList[7] = new Mob('Blaze', 'Blaze', 'Blaze_(Icon).png', 20);
-mobList[8] = new Mob('Witch', 'Witch', 'witch.png', 26);
-//mobList[7] = new Mob('Villager', 'Villager', 20);
 
 
 
@@ -127,11 +111,17 @@ function start() {
 	var tempButton = document.getElementById("btDebug");
 
 
+
+
+	loadMobList();
+
+
+
 	//--- Attach events
 	if(tempButton.addEventListener){
-		tempButton.addEventListener("click", generateCommand(), true);
+		tempButton.addEventListener("click", function() { generateCommand(); }, true);
 	}else{
-		tempButton.attachEvent("click", generateCommand());
+		tempButton.attachEvent("click", function() { generateCommand(); });
 	};
 
 	radType[0].addEventListener("click", function() { setCommandType('spawner'); }, true);
@@ -144,6 +134,7 @@ function start() {
 	//-- Initial values
 	txtResult.value = '';
 	setCommandType('spawner');
+	document.getElementById("hfdCurrentMob").value = '';
 
 
 	//getValueFromRadio(radType)
@@ -164,12 +155,22 @@ function initializeSpawnerProperties() {
 // Captures the values of the form and send it to the command internal object.
 function captureForm() {
 
-	//--- capture mob spawner propeties ---//
+	var selectedMobIndex = parseInt(document.getElementById("hfdCurrentMob").value);
+	console.log('selected mob index: ' + selectedMobIndex);
+
+
 	if (mcCommand.NBTInfo instanceof MinecraftMobSpawner) {
 
-mcCommand.NBTInfo.EntityId = 'Zombie';	// !!TEMP!!
+		//--- capture the selected mob ---//
+		if (isNaN(selectedMobIndex)) {
+			mcCommand.NBTInfo.EntityId = '';
+			mcCommand.NBTInfo.SpawnData = undefined;
+		} else {
+			mcCommand.NBTInfo.EntityId = mobList[selectedMobIndex].EntityId;
+			mcCommand.NBTInfo.SpawnData = mobList[selectedMobIndex].NBTInfo;
+		}
 
-
+		//--- capture mob spawner propeties ---//
 		mcCommand.NBTInfo.SpawnCount 			= parseInt(document.getElementById("txtSPWSpawnCount").value);
 		mcCommand.NBTInfo.SpawnRange 			= parseInt(document.getElementById("txtSPWSpawnRange").value);
 		mcCommand.NBTInfo.Delay 				= parseInt(document.getElementById("txtSPWDelayNext").value);
@@ -193,8 +194,8 @@ function createMobSelector(container) {
 		mobBoxHtml = "<div class='boxMob' id='mob" + i + "'>";
 
 		mobBoxHtml += "<div class='boxPortrait' onclick='setMainMob(" + i + ")' ondblclick='setMainMob(" + i + ", true)'>";
-		mobBoxHtml += "<img src='assets/images/" + mobList[i].Picture + "' alt='" + mobList[i].Tooltip + "' title='" + mobList[i].Tooltip + "' />";
-		mobBoxHtml += "<div class='mobName'>" + mobList[i].Tooltip + "</div>"
+		mobBoxHtml += "<img src='assets/images/" + mobList[i].Picture + "' alt='" + mobList[i].PresetName + "' title='" + mobList[i].PresetName + "' />";
+		mobBoxHtml += "<div class='mobName'>" + mobList[i].PresetName + "</div>"
 		mobBoxHtml += "</div>";
 
 		mobBoxHtml += "<div class='boxCommand'>";
@@ -386,7 +387,7 @@ function setMainMob(index, customize) {
 	document.getElementById("mob" + index).className += ' boxSelected';
 
 	//-- Save what mob was selected --
-	mcCommand.MainMob = mobList[index];
+	document.getElementById("hfdCurrentMob").value = index;
 
 	//-- Show the customization/edit box if needed --
 	if (customize === true) showPropertiesBox('spawnerCustom');
@@ -395,10 +396,11 @@ function setMainMob(index, customize) {
 
 
 function generateCommand() {
+	captureForm();
+
 	// DEBUG //
 	console.log(JSON.stringify(mcCommand));
 
-	captureForm();
 	txtResult.value = mcCommand.getCommand();
 }
 
