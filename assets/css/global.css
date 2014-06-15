@@ -23,8 +23,8 @@ footer	{ padding: 25px 10px 15px; text-align: center; font-size: 12px; color: #7
 	border: 1px solid #0051a7; color: #fff;
 	width: 75px; padding: 3px 0 3px 32px; display: inline-block; margin: 1px 2px; cursor: pointer;
 }
-.boxMob .boxCommand .cmdSelect { background-image: url('assets/images/ico-select.png') }
-.boxMob .boxCommand .cmdEdit { background-image: url('assets/images/ico-edit.png'); }
+.boxMob .boxCommand .cmdSelect { background-image: url('../images/ico-select.png') }
+.boxMob .boxCommand .cmdEdit { background-image: url('../images/ico-edit.png'); }
 
 .boxMob:hover .mobName 		{ display: block; }
 .boxMob:hover .boxCommand 	{ visibility: visible; }
@@ -35,7 +35,7 @@ footer	{ padding: 25px 10px 15px; text-align: center; font-size: 12px; color: #7
 
 
 #boxCommandType 	{}
-#boxMobCustomizer		{ display: none; }
+#boxMobCustomizer	{ display: none; }
 #boxSpawnerCustomizer	{ display: none; }
 
 
