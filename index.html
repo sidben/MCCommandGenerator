@@ -42,7 +42,10 @@
 				<label for="txtMobPresetName" title="Internal name of your mob.">Preset name:</label>
 				<input type='text' id='txtMobPresetName' /><br/>
 
-				*** SAVE AS PRESET BUTTON ***
+				<div class="boxCommand">
+					<span class="cmdSave" onclick="alert('not implemented');">Save Preset</span>
+					<span class="cmdDelete" onclick="alert('not implemented');">Exclude</span>
+				</div>
 			</div>
 			<div class="box_props" class="clear">
 				<div id="prop_global">
@@ -69,13 +72,31 @@
 				</div>
 
 
+				<div id="prop_crep">
+					<b>CREEPER UNIQUE PROPERTIES</b><br/>
+
+					<span class="formLabel">Charged:</span>
+					<input type="radio" id="radCrepChargedTrue" name="radCrepCharged" value="true"><label for="radZombBabyTrue">Yes</label> &nbsp;
+					<input type="radio" id="radCrepChargedFalse" name="radCrepCharged" value="false"><label for="radZombBabyFalse">No</label><br/>
+
+					<label for="txtCrepFuse" title="" class="formLabel">Fuse:</label>
+					<input type="text" id="txtCrepFuse" /><br/>
+				</div>
+
+				<div id="prop_endm">
+					<b>ENDERMAN UNIQUE PROPERTIES</b><br/>
+
+					<label for="ddlEndmBlock" title="" class="formLabel">Block carried:</label>
+					<select id="ddlEndmBlock"></select><br/>
+				</div>
+
 				<div id="prop_skel">
 					<b>SKELETON UNIQUE PROPERTIES</b><br/>
 
 					<span class="formLabel">Skeleton type:</span>
 					<input type="radio" id="radSkelTypeNone" name="radSkelType" value=""><label for="radSkelTypeNone">Default</label> &nbsp;
-					<input type="radio" id="radSkelTypeNormal" name="radSkelType" value=""><label for="radSkelTypeNormal">Only normal</label> &nbsp;
-					<input type="radio" id="radSkelTypeWither" name="radSkelType" value=""><label for="radSkelTypeWither">Only wither</label><br/>
+					<input type="radio" id="radSkelTypeNormal" name="radSkelType" value=""><label for="radSkelTypeNormal">Normal</label> &nbsp;
+					<input type="radio" id="radSkelTypeWither" name="radSkelType" value=""><label for="radSkelTypeWither">Wither</label><br/>
 
 				</div>
 
