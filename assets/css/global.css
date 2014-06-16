@@ -11,6 +11,17 @@ footer	{ padding: 25px 10px 15px; text-align: center; font-size: 12px; color: #7
 
 
 
+
+#boxCommandType 	{}
+#boxSpawnerCustomizer	{ display: none; }
+
+
+#txtResult	{ width: 100%; height: 50px; background: #111; color: #0f0; padding: 4px; border: 1px solid #000; }
+
+
+
+
+
 /*-- Mob Selector --*/
 #boxMobType 		{ display: none; }
 
@@ -37,23 +48,16 @@ footer	{ padding: 25px 10px 15px; text-align: center; font-size: 12px; color: #7
 
 
 
-#boxCommandType 	{}
-#boxSpawnerCustomizer	{ display: none; }
-
-
-
-#txtResult	{ width: 80%; height: 50px; background: #333; color: #0f0; padding: 4px; border: 1px solid #000; }
-
 
 
 
 /*-- Mob Customizer --*/
 #boxMobCustomizer	{ display: none; }
 
-#boxMobCustomizer .box_specs { float: left; width: 250px; margin-right: 15px; }
+#boxMobCustomizer .box_specs { float: left; width: 250px; margin-right: 35px; }
 #boxMobCustomizer .box_props { float: left; }
 
-#boxMobHearts	{ padding: 15px 0; width: 220px; }
+#boxMobHearts	{ padding: 15px 0; width: 220px; margin: auto; text-align: center; }
 #boxMobHearts img { width: 18px; }
 
 #prop_global 	{ padding: 0 0 20px; }

@@ -445,58 +445,11 @@ function generateCommand() {
 
 
 
-function getRadioValue(elementName) {
-	var element = document.getElementsByName(elementName);
-	if (!element) return '';
-	for (var i=0; i<element.length; i++) {
-		if (element[i].checked) { return element[i].value; }
-	}
-	return '';
-}
-
-function getRadioValueBoolean(elementName) {
-	var value = getRadioValue(elementName);
-
-	if (value == '') return undefined;
-	if (value == true || value == 'true' || value == 1) { return true; }
-	if (value == false || value == 'false' || value == 0) { return false; }
-	return undefined;
-}
-
-function getRadioValueNumber(elementName) {
-	var value = getRadioValue(elementName);
-
-	if (value == '') return undefined;
-	if (isNaN(value)) return undefined;
-	return parseInt(value);
-}
-
-
-function setRadioValue(elementName, newValue) {
-	var element = document.getElementsByName(elementName);
-	if (!element) return;
-	if (newValue === undefined) newValue = '';
-
-	for (var i=0; i<element.length; i++) {
-		element[i].checked = false;
-		if (element[i].value == newValue.toString()) { element[i].checked = true; }
-	}
-}
 
 
 
 
 
-function addDropdownItem(dropdown, name, value) {
-	if (!dropdown) return;
-
-	var opt = document.createElement("option");
-
-	opt.text = name;
-	opt.value = value;
-
-	dropdown.options.add(opt);
-}
 
 function fillDropdownItens(elementId, listType) {
 	var dropdown = document.getElementById(elementId);
