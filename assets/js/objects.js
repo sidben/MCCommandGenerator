@@ -41,18 +41,52 @@ var MOB_ZOMBIE_DEFAULT_HEALTH	= 20;
 //======================= Utility =======================//
 
 /*
+Ref: http://stackoverflow.com/questions/728360/most-elegant-way-to-clone-a-javascript-object
+*/
+function clone(obj) {
+	var copy = new Object();
+
+	for (var attr in obj) {
+		//console.log(attr + ' (' + typeof obj[attr] + ')')
+
+		switch(typeof obj[attr]) {
+			case 'number':
+			case 'string':
+			case 'boolean':
+				copy[attr] = obj[attr];
+				break;
+
+			case 'object':
+				copy[attr] = clone(obj[attr].toJSON());
+				break;
+
+			default:
+				//console.log('not cloned');
+		}
+	}
+
+	return copy;
+}
+
+
+/*
 Flattens the object, so JSON can stringify parent properties.
 Source: //stackoverflow.com/questions/8779249/how-to-stringify-inherited-objects-to-json
 */
 function mcStringify(x, removeQuotes) {
 	var r = '';
+	//var xClone = clone(x.toJSON ? x.toJSON() : x);
+	var xClone = x;
 
-    for(var i in x) {
-        if(!x.hasOwnProperty(i)) {
-            x[i] = x[i];
-        }
-    }
+/*
+	console.log('mcStringify');
+	console.log(x);
+	console.log(xClone);
+*/
 
+
+
+    //r = JSON.stringify(xClone);
     r = JSON.stringify(x);
     if (removeQuotes) {
 		r = r.replace(/\"/g, "");
@@ -60,7 +94,6 @@ function mcStringify(x, removeQuotes) {
 		// removes empty values
 		r = r.replace(",SpawnData:{}", "");
 	}
-
 
     return r;
 }
@@ -92,7 +125,7 @@ function MinecraftCommand (type) {
 		// Type of command
 		switch(this.Type) {
 			case 'spawner':
-				if(typeof this.NBTInfo != 'undefined') errorMsg = this.NBTInfo.checkErrors()
+				if(typeof this.NBTInfo != 'undefined') errorMsg = this.NBTInfo.checkErrors();
 
 				if(!errorMsg) {
 					cmd = '/setblock ~ ~ ~ minecraft:mob_spawner 0 replace ';
@@ -157,12 +190,16 @@ function MinecraftMobSpawner () {
 
 	//To be used with JSON.Stringify, remove invalid properties.
 	this.toJSON = function() {
-		var copy = this;
+		// var copy = this;		// OBS: this way copy is useless, the main object is altered
+		var copy = new Object();
+		for(var i in this) {
+			copy[i] = this[i];
+    	}
 
 		if (!copy.EntityId) copy.EntityId = undefined;
 		if (isNonValidNumber(copy.SpawnCount, SPW_DEFAULT_SPAWNCOUNT, 1)) copy.SpawnCount = undefined;
 		if (isNonValidNumber(copy.SpawnRange, SPW_DEFAULT_SPAWNRANGE, 1)) copy.SpawnRange = undefined;
-		if (isNonValidNumber(copy.Delay, -1, -1)) copy.Delay = undefined;
+		if (isNonValidNumber(copy.Delay, undefined, -1)) copy.Delay = undefined;
 		if (isNonValidNumber(copy.MinSpawnDelay, SPW_DEFAULT_MINDELAY, 0)) copy.MinSpawnDelay = undefined;
 		if (isNonValidNumber(copy.MaxSpawnDelay, SPW_DEFAULT_MAXDELAY, 1)) copy.MaxSpawnDelay = undefined;
 		if (isNonValidNumber(copy.MaxNearbyEntities, SPW_DEFAULT_MAXNEARBYMOBS, 1)) copy.MaxNearbyEntities = undefined;
@@ -200,7 +237,7 @@ function MinecraftLivingEntity() {
 
 	//--- creates a copy of this object to customize JSON serialization ---//
 	this.makeCopy = function() {
-		var copy = this;
+		var copy = clone(this);
 
 		if (!copy.CustomName) {
 			copy.CustomName = undefined;
@@ -299,7 +336,8 @@ function MobSkeleton() {
 	this.NBTInfo			= new MinecraftLivingEntity();
 	this.NBTInfo.Health		= MOB_SKELETON_DEFAULT_HEALTH;
 
-	this.NBTInfo.SkeletonType	= MOB_SKELETON_TYPE_NORMAL;
+	//this.NBTInfo.SkeletonType	= MOB_SKELETON_TYPE_NORMAL;
+	this.NBTInfo.SkeletonType	= undefined;
 
 
 	this.NBTInfo.toJSON = function() {
@@ -357,13 +395,13 @@ function MobZombie() {
 }
 
 
-MobBlaze.prototype 		= new BaseMob("Blaze", "Blaze_(Icon).png", true);
-MobCreeper.prototype 	= new BaseMob("Creeper", "crepper.png", true);
-MobEnderman.prototype 	= new BaseMob("Enderman", "enderman.png", true);
-MobSkeleton.prototype 	= new BaseMob("Skeleton", "skeleton.png", true);
-MobSpider.prototype 	= new BaseMob("Spider", "spider.png", true);
-MobWitch.prototype 		= new BaseMob("Witch", "witch.png", true);
-MobZombie.prototype 	= new BaseMob("Zombie", "zombie.png", true);
+MobBlaze.prototype 		= new BaseMob("Blaze", "blaze.jpg", true);
+MobCreeper.prototype 	= new BaseMob("Creeper", "creeper.jpg", true);
+MobEnderman.prototype 	= new BaseMob("Enderman", "enderman.jpg", true);
+MobSkeleton.prototype 	= new BaseMob("Skeleton", "skeleton.jpg", true);
+MobSpider.prototype 	= new BaseMob("Spider", "spider.jpg", true);
+MobWitch.prototype 		= new BaseMob("Witch", "witch.jpg", true);
+MobZombie.prototype 	= new BaseMob("Zombie", "zombie.jpg", true);
 
 
 
@@ -384,16 +422,19 @@ function loadMobList() {
 
 	var babyZombie = new MobZombie();
 	babyZombie.PresetName 		= "Baby Zombie"
+	babyZombie.Picture 			= "baby-zombie.jpg"
 	babyZombie.IsVanilla 		= false;
 	babyZombie.NBTInfo.IsBaby	= true;
 
 	var powerCreeper = new MobCreeper();
 	powerCreeper.PresetName 		= "Charged Creeper"
+	powerCreeper.Picture 			= "charged-creeper.jpg"
 	powerCreeper.IsVanilla 			= false;
 	powerCreeper.NBTInfo.powered	= true;
 
 	var witherSkelly = new MobSkeleton();
 	witherSkelly.PresetName 			= "Wither Skeleton"
+	witherSkelly.Picture 				= "wither-skeleton.jpg"
 	witherSkelly.IsVanilla 				= false;
 	witherSkelly.NBTInfo.SkeletonType	= MOB_SKELETON_TYPE_WITHER;
 
@@ -412,11 +453,12 @@ function loadMobList() {
 	mobList.push(witherSkelly);
 
 
-
+	/*
 	console.log(mobList.length + " mobs available");
 	for (var i=0; i<mobList.length; i++) {
 		console.log('MOB: ' + mcStringify(mobList[i]));
 	}
+	*/
 
 }
 

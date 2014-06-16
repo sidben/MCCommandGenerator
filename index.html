@@ -26,35 +26,137 @@
 
 
 		<input type="hidden" id="hfdCurrentMob" />
-
 		<div id="boxMobType" class="boxGeneric">
 		</div>
+
+
 		<div id="boxMobCustomizer" class="boxGeneric">
+			<div class="box_specs">
+				<div class="boxPortrait">
+					<img id="imgMobPreset" />
+				</div>
+				<br/>
+
+				<label for="txtMobPresetName" title="Internal name of your mob.">Preset name:</label>
+				<input type='text' id='txtMobPresetName' /><br/>
+
+				<div id="boxMobHearts"></div>
+			</div>
+			<div class="box_props" class="clear">
+				<div id="prop_global">
+					<b>GLOBAL PROPERTIES</b><br/>
+
+					<label for="txtMobHealth" title="Health" class="formLabel">Health:</label>
+					<input type="text" id="txtMobHealth" /><br/>
+
+					<label for="txtMobCustomName" title="" class="formLabel">Custom name:</label>
+					<input type="text" id="txtMobCustomName" /><br/>
+
+					<span class="formLabel">Custom name visible:</span>
+					<input type="radio" id="radNameVisibleTrue" name="radNameVisible" value="true"><label for="radNameVisibleTrue">Yes</label> &nbsp;
+					<input type="radio" id="radNameVisibleFalse" name="radNameVisible" value="false"><label for="radNameVisibleFalse">No</label><br/>
+
+					<span class="formLabel">Can pick up loot:</span>
+					<input type="radio" id="radPickLootNone" name="radPickLoot" value=""><label for="radPickLootNone">Default</label> &nbsp;
+					<input type="radio" id="radPickLootTrue" name="radPickLoot" value="true"><label for="radPickLootTrue">Yes</label> &nbsp;
+					<input type="radio" id="radPickLootFalse" name="radPickLoot" value="false"><label for="radPickLootFalse">No</label><br/>
+
+					<span title="Persistent mobs won't despawn" class="formLabel">Persistent:</span>
+					<input type="radio" id="radPersistentTrue" name="radPersistent" value="true"><label for="radPersistentTrue">Yes</label> &nbsp;
+					<input type="radio" id="radPersistentFalse" name="radPersistent" value="false"><label for="radPersistentFalse">No</label> <br/>
+				</div>
+
+
+				<div id="prop_skel">
+					<b>SKELETON UNIQUE PROPERTIES</b><br/>
+
+					<span class="formLabel">Skeleton type:</span>
+					<input type="radio" id="radSkelTypeNone" name="radSkelType" value=""><label for="radSkelTypeNone">Default</label> &nbsp;
+					<input type="radio" id="radSkelTypeNormal" name="radSkelType" value=""><label for="radSkelTypeNormal">Only normal</label> &nbsp;
+					<input type="radio" id="radSkelTypeWither" name="radSkelType" value=""><label for="radSkelTypeWither">Only wither</label><br/>
+
+				</div>
+
+				<div id="prop_zomb">
+					<b>ZOMBIE UNIQUE PROPERTIES</b><br/>
+
+					<span class="formLabel">Is baby:</span>
+					<input type="radio" id="radZombBabyNone" name="radZombBaby" value=""><label for="radZombBabyNone">Default</label> &nbsp;
+					<input type="radio" id="radZombBabyTrue" name="radZombBaby" value="true"><label for="radZombBabyTrue">Yes</label> &nbsp;
+					<input type="radio" id="radZombBabyFalse" name="radZombBaby" value="false"><label for="radZombBabyFalse">No</label><br/>
+
+					<span class="formLabel">Is villager:</span>
+					<input type="radio" id="radZombVillagerNone" name="radZombVillager" value=""><label for="radZombVillagerNone">Default</label> &nbsp;
+					<input type="radio" id="radZombVillagerTrue" name="radZombVillager" value="true"><label for="radZombVillagerTrue">Yes</label> &nbsp;
+					<input type="radio" id="radZombVillagerFalse" name="radZombVillager" value="false"><label for="radZombVillagerFalse">No</label><br/>
+
+					<span class="formLabel">Can break doors:</span>
+					<input type="radio" id="radZombDoorsNone" name="radZombDoors" value=""><label for="radZombDoorsNone">Default</label> &nbsp;
+					<input type="radio" id="radZombDoorsTrue" name="radZombDoors" value="true"><label for="radZombDoorsTrue">Yes</label> &nbsp;
+					<input type="radio" id="radZombDoorsFalse" name="radZombDoors" value="false"><label for="radZombDoorsFalse">No</label><br/>
+				</div>
+
+
+				<div id="prop_global">
+					<b>EQUIPMENT</b><br/>
+
+					<label for="ddlEquipHand" title="The item being held in the mob's hand" class="formLabel">Hand:</label>
+					<select id="ddlEquipHand"></select><br/>
+
+					<label for="ddlEquipHead" title="Armor - Head" class="formLabel">Head:</label>
+					<select id="ddlEquipHead"></select><br/>
+
+					<label for="ddlEquipBody" title="Armor - Chest" class="formLabel">Chest:</label>
+					<select id="ddlEquipBody"></select><br/>
+
+					<label for="ddlEquipLegs" title="Armor - Legs" class="formLabel">Legs:</label>
+					<select id="ddlEquipLegs"></select><br/>
+
+					<label for="ddlEquipFeet" title="Armor - Feet" class="formLabel">Feet:</label>
+					<select id="ddlEquipFeet"></select><br/>
+				</div>
+
+
+				<div id="prop_global">
+					<b>POTION EFFECTS</b><br/>
+
+				</div>
+
+
+				<div id="prop_global">
+					<b>ATTRIBUTES</b><br/>
+
+				</div>
+
+
+			</div>
+
+			<div class="clear"></div>
 		</div>
 
 
 		<div id="boxSpawnerCustomizer"  class="boxGeneric">
 			<b>Spawner parameters:</b><br/>
 
-			<label for="txtSPWSpawnCount" title="Max amount of mobs per spawn">SpawnCount:</label>
+			<label for="txtSPWSpawnCount" title="Max amount of mobs per spawn" class="formLabel">SpawnCount:</label>
 			<input type='text' id='txtSPWSpawnCount' /> <br/>
 
-			<label for="txtSPWSpawnRange" title="Spawn area range">SpawnRange:</label>
+			<label for="txtSPWSpawnRange" title="Spawn area range" class="formLabel">SpawnRange:</label>
 			<input type='text' id='txtSPWSpawnRange' /> <br/>
 
-			<label for="txtSPWDelayNext" title="Next spawn delay">Delay:</label>
+			<label for="txtSPWDelayNext" title="Next spawn delay" class="formLabel">Delay:</label>
 			<input type='text' id='txtSPWDelayNext' /> ticks <br/>
 
-			<label for="txtSPWDelayMin">MinSpawnDelay:</label>
+			<label for="txtSPWDelayMin" class="formLabel">MinSpawnDelay:</label>
 			<input type='text' id='txtSPWDelayMin' /> ticks <br/>
 
-			<label for="txtSPWDelayMax">MaxSpawnDelay:</label>
+			<label for="txtSPWDelayMax" class="formLabel">MaxSpawnDelay:</label>
 			<input type='text' id='txtSPWDelayMax' /> ticks <br/>
 
-			<label for="txtSPWMaxMobs" title="Max amount of mobs around the spawner">MaxNearbyEntities:</label>
+			<label for="txtSPWMaxMobs" title="Max amount of mobs around the spawner" class="formLabel">MaxNearbyEntities:</label>
 			<input type='text' id='txtSPWMaxMobs' /><br/>
 
-			<label for="txtSPWPlayerRange" title="Activation range">RequiredPlayerRange:</label>
+			<label for="txtSPWPlayerRange" title="Activation range" class="formLabel">RequiredPlayerRange:</label>
 			<input type='text' id='txtSPWPlayerRange' /><br/>
 		</div>
 
@@ -75,359 +177,13 @@
 	</section>
 
 	<footer>
-		version alpha 0.1 - follow this project on <a href="https://github.com/sidben/MCCommandGenerator" target="_blank">GitHub</a><br/>
+		version alpha 0.2 - follow this project on <a href="https://github.com/sidben/MCCommandGenerator" target="_blank">GitHub</a><br/>
 		icons designed by <a href="http://flaticon.com/" target="_blank">Flaticon.com</a><br/>
 		This tool is not supported by Mojang in any way. Minecraft, its images and materials are trademarks and copyrights of Mojang AB.
 	</footer>
+
+
+	<script type="text/javascript" src="assets/js/objects.js"></script>
+	<script type="text/javascript" src="assets/js/main.js"></script>
 </body>
-
-
-
-<script type="text/javascript" src="assets/js/objects.js"></script>
-<script>
-//--- CONTANSTS AND GLOBAL VARIABLES ---//
-
-var mcCommand = new MinecraftCommand('spawner');
-
-
-
-//--- CUSTOM OBJECTS ---//
-
-
-
-//--- INITIALIZATION ---//
-
-
-
-
-var txtResult 	= document.getElementById("txtResult");
-var radType 	= document.getElementsByName("radCmdType");
-
-
-
-
-
-function start() {
-	var tempButton = document.getElementById("btDebug");
-
-
-
-
-	loadMobList();
-
-
-
-	//--- Attach events
-	if(tempButton.addEventListener){
-		tempButton.addEventListener("click", function() { generateCommand(); }, true);
-	}else{
-		tempButton.attachEvent("click", function() { generateCommand(); });
-	};
-
-	radType[0].addEventListener("click", function() { setCommandType('spawner'); }, true);
-	radType[1].addEventListener("click", function() { setCommandType('summon'); }, true);
-	radType[2].addEventListener("click", function() { setCommandType('item'); }, true);
-	radType[3].addEventListener("click", function() { setCommandType('potion'); }, true);
-
-
-
-	//-- Initial values
-	txtResult.value = '';
-	setCommandType('spawner');
-	document.getElementById("hfdCurrentMob").value = '';
-
-
-	//getValueFromRadio(radType)
-}
-
-
-function initializeSpawnerProperties() {
-	document.getElementById("txtSPWSpawnCount").value = SPW_DEFAULT_SPAWNCOUNT;
-	document.getElementById("txtSPWSpawnRange").value = SPW_DEFAULT_SPAWNRANGE;
-	document.getElementById("txtSPWDelayMin").value = SPW_DEFAULT_MINDELAY;
-	document.getElementById("txtSPWDelayMax").value = SPW_DEFAULT_MAXDELAY;
-	document.getElementById("txtSPWMaxMobs").value = SPW_DEFAULT_MAXNEARBYMOBS;
-	document.getElementById("txtSPWPlayerRange").value = SPW_DEFAULT_PLAYERRANGE;
-}
-
-
-
-// Captures the values of the form and send it to the command internal object.
-function captureForm() {
-
-	var selectedMobIndex = parseInt(document.getElementById("hfdCurrentMob").value);
-	console.log('selected mob index: ' + selectedMobIndex);
-
-
-	if (mcCommand.NBTInfo instanceof MinecraftMobSpawner) {
-
-		//--- capture the selected mob ---//
-		if (isNaN(selectedMobIndex)) {
-			mcCommand.NBTInfo.EntityId = '';
-			mcCommand.NBTInfo.SpawnData = undefined;
-		} else {
-			mcCommand.NBTInfo.EntityId = mobList[selectedMobIndex].EntityId;
-			mcCommand.NBTInfo.SpawnData = mobList[selectedMobIndex].NBTInfo;
-		}
-
-		//--- capture mob spawner propeties ---//
-		mcCommand.NBTInfo.SpawnCount 			= parseInt(document.getElementById("txtSPWSpawnCount").value);
-		mcCommand.NBTInfo.SpawnRange 			= parseInt(document.getElementById("txtSPWSpawnRange").value);
-		mcCommand.NBTInfo.Delay 				= parseInt(document.getElementById("txtSPWDelayNext").value);
-		mcCommand.NBTInfo.MinSpawnDelay 		= parseInt(document.getElementById("txtSPWDelayMin").value);
-		mcCommand.NBTInfo.MaxSpawnDelay 		= parseInt(document.getElementById("txtSPWDelayMax").value);
-		mcCommand.NBTInfo.MaxNearbyEntities 	= parseInt(document.getElementById("txtSPWMaxMobs").value);
-		mcCommand.NBTInfo.RequiredPlayerRange 	= parseInt(document.getElementById("txtSPWPlayerRange").value);
-	}
-
-}
-
-
-
-function createMobSelector(container) {
-	var mobBoxHtml = '';
-
-
-	container.innerHTML = "<b>Select the mob type:</b><br/>";
-
-	for (var i=0; i<mobList.length; i++) {
-		mobBoxHtml = "<div class='boxMob' id='mob" + i + "'>";
-
-		mobBoxHtml += "<div class='boxPortrait' onclick='setMainMob(" + i + ")' ondblclick='setMainMob(" + i + ", true)'>";
-		mobBoxHtml += "<img src='assets/images/" + mobList[i].Picture + "' alt='" + mobList[i].PresetName + "' title='" + mobList[i].PresetName + "' />";
-		mobBoxHtml += "<div class='mobName'>" + mobList[i].PresetName + "</div>"
-		mobBoxHtml += "</div>";
-
-		mobBoxHtml += "<div class='boxCommand'>";
-		mobBoxHtml += "<span class='cmdSelect' onclick='setMainMob(" + i + ")'>Select</span>";
-		mobBoxHtml += "<span class='cmdEdit' onclick='setMainMob(" + i + ", true)'>Edit</span>";
-		mobBoxHtml += "</div>";
-
-		mobBoxHtml += "</div>";
-		container.innerHTML += mobBoxHtml;
-	}
-
-	// OBS 1 (?): Create groups: vanilla (basic) mobs | Presets (?) | My mobs (saved locally)
-}
-
-
-
-
-function createMobCustomizer(container) {
-	var mobBoxHtml = '';
-
-	//--- validation ---
-	if (mcCommand.MainMob === undefined) { showErrorMessage("No mob selected"); return; }
-
-
-	mobBoxHtml = "<b>Customize your mob:</b><br/>";
-
-	//--- mob picture ---
-	mobBoxHtml += "<div class='boxMob'>";
-
-	mobBoxHtml += "<div class='boxPortrait'>";
-	mobBoxHtml += "<img src='assets/images/" + mcCommand.MainMob.Picture + "' alt='" + mcCommand.MainMob.Tooltip + "' title='" + mcCommand.MainMob.Tooltip + "' />";
-	mobBoxHtml += "</div>";
-
-	mobBoxHtml += "</div>";
-
-
-	//--- mob properties and modifiers ---
-	mobBoxHtml += "Preset name: <input type='text' value='Custom " +  mcCommand.MainMob.Tooltip + "' /> <br/>"
-
-	mobBoxHtml += "<br/><br/> <b>GLOBAL PROPERTIES</b><br/>"
-	mobBoxHtml += "Health: <input type='text' value='" + mcCommand.MainMob.DefaultHealth + "' /> <br/>"
-	mobBoxHtml += "Custom name: <input type='text' /> <br/>"
-	mobBoxHtml += "Custom name visible: YES / NO <br/>"
-	mobBoxHtml += "Can pick up loot: YES / NO <br/>"
-	mobBoxHtml += "Persistent (will not despawn): YES / NO <br/>"
-
-	mobBoxHtml += "<br/><br/> <b>UNIQUE PROPERTIES</b><br/>"
-	switch(mcCommand.MainMob.EntityId) {
-		case 'Creeper':
-			mobBoxHtml += "Charged: YES / NO <br/>"
-			mobBoxHtml += "Explosion radius: <input type='text' value='3' /> <br/>"
-			mobBoxHtml += "Fuse: <input type='text' value='30' /> ticks <br/>"
-			break;
-
-		case 'Enderman':
-			mobBoxHtml += "Carried block: <input type='text' /> <br/>"
-			break;
-
-		case 'Guast':
-			mobBoxHtml += "Explosion power: <input type='text' value='1' /> <br/>"
-			break;
-
-		case 'PigZombie':
-			mobBoxHtml += "Angry: YES / NO <br/>"
-			break;
-
-		case 'Skeleton':
-			mobBoxHtml += "Type: Regular / Wither / undefined<br/>"
-			break;
-
-		case 'Villager':
-			mobBoxHtml += "Profession: <input type='text' value='1' /> <br/>"
-			break;
-
-		case 'VillagerGolem':
-			mobBoxHtml += "Player created (don't attack players): YES / NO <br/>"
-			break;
-
-		case 'Wolf':
-			mobBoxHtml += "Angry: YES / NO <br/>"
-			break;
-
-		case 'Zombie':
-			mobBoxHtml += "Villager: YES / NO <br/>"
-			mobBoxHtml += "Baby: YES / NO <br/>"
-			mobBoxHtml += "Can break doors: YES / NO <br/>"
-			break;
-
-	}
-
-
-	mobBoxHtml += "<br/><br/> <b>ATTRIBUTES</b><br/>"
-
-	mobBoxHtml += "<br/><br/> <b>EQUIPMENT</b><br/>"
-
-	mobBoxHtml += "<br/><br/> <b>POTION EFFECTS</b><br/>"
-
-
-	mobBoxHtml += "<br/><br/> TODO: save as / reset to default (confirm) / Cancel (confirm)"
-
-	container.innerHTML = mobBoxHtml;
-}
-
-
-
-
-function setCommandType(type) {
-	mcCommand.Type = type;
-
-	switch(type) {
-		case 'spawner':
-			mcCommand.NBTInfo = new MinecraftMobSpawner();
-
-			radType[0].checked = true;
-			showPropertiesBox('spawnerBasic');
-			break;
-
-		case 'summon':
-			radType[1].checked = true;
-			showPropertiesBox('summon');
-			break;
-
-		case 'item':
-			radType[2].checked = true;
-			showPropertiesBox('item');		// ToDo
-			break;
-
-		case 'potion':
-			radType[3].checked = true;
-			showPropertiesBox('potion');	// ToDo
-			break;
-
-		default:
-			mcCommand.type = "INVALID";
-	}
-}
-
-
-
-
-function showPropertiesBox(boxType) {
-	var bMobType 		= document.getElementById("boxMobType");
-	var bSpawnerProps 	= document.getElementById("boxSpawnerCustomizer");
-	var bMobProps 		= document.getElementById("boxMobCustomizer");
-
-
-	bMobType.style.display 			= 'none';
-	bSpawnerProps.style.display 	= 'none';
-	bMobProps.style.display 		= 'none';
-
-
-	switch(boxType) {
-		case 'spawnerBasic':
-			bMobType.style.display = 'block';
-			bSpawnerProps.style.display = 'block';
-			initializeSpawnerProperties();
-			createMobSelector(bMobType);
-			break;
-
-		case 'spawnerCustom':
-			bMobProps.style.display = 'block';
-			bSpawnerProps.style.display = 'block';
-			initializeSpawnerProperties();
-			createMobCustomizer(bMobProps);
-			break;
-
-		case 'summon':
-			bMobType.style.display = 'block';
-			createMobSelector(bMobType);
-			break;
-
-	}
-}
-
-
-
-
-
-function setMainMob(index, customize) {
-	// OBS: If in the future 'boxSelected' gets reused, change this to a loop on mobList
-
-	//-- remove the 'selected' class from everyone --
-	var currentSelectedList = document.getElementsByClassName('boxSelected');
-	for (var j=0; j<currentSelectedList.length; j++) {
-		currentSelectedList[j].className = currentSelectedList[j].className.replace('boxSelected', '');
-	}
-
-	//-- add the 'selected' class to the actual selection --
-	document.getElementById("mob" + index).className += ' boxSelected';
-
-	//-- Save what mob was selected --
-	document.getElementById("hfdCurrentMob").value = index;
-
-	//-- Show the customization/edit box if needed --
-	if (customize === true) showPropertiesBox('spawnerCustom');
-}
-
-
-
-function generateCommand() {
-	captureForm();
-
-	// DEBUG //
-	console.log(JSON.stringify(mcCommand));
-
-	txtResult.value = mcCommand.getCommand();
-}
-
-
-
-
-function getValueFromRadio(element) {
-	for (var i=0; i<element.length; i++) {
-		if (element[i].checked) { return element[i].value; }
-	}
-	return '';
-}
-
-
-
-function showErrorMessage(msg) {
-	alert("ERROR: " + msg);
-}
-
-
-
-
-window.onload = start();
-
-
-
-</script>
-
-
 </html>

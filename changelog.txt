@@ -12,3 +12,17 @@ alpha 0.1
 - added mob customizer;
 - added auto-selection on the command textbox;
 - added support for mobs NBT data in the create spawner command;
+
+
+
+alpha 0.2
+
+- all javascript and css is now in separated files;
+- updated all mob pictures;
+- added timer to update the command text output automatically;
+- added support to set and load mob properties on the current selected preset;
+- added interface to customize mob properties;
+- polished properties interface;
+- resolved conflict with 'cloning' objects creating conflict with spawner checkErrors;	
+- updated 'cloning' methods to support nested objects;
+- resolved conflict where JSON.Stringify was causing nested objects to be lost;
