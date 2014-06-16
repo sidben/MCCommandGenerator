@@ -29,6 +29,35 @@ function clone(obj) {
 }
 
 
+function cloneStrongType(obj) {
+	var copy = new Object();
+	if (obj instanceof BaseMob) copy = new BaseMob();
+	if (obj instanceof MinecraftLivingEntity) copy = new MinecraftLivingEntity();
+
+
+	for (var attr in obj) {
+		switch(typeof obj[attr]) {
+			case 'number':
+			case 'string':
+			case 'boolean':
+				copy[attr] = obj[attr];
+				break;
+
+			case 'object':
+				copy[attr] = cloneStrongType(obj[attr]);
+				break;
+
+			default:
+				//console.log('not cloned');
+		}
+	}
+
+	return copy;
+}
+
+
+
+
 /*
 Flattens the object, so JSON can stringify parent properties.
 Source: //stackoverflow.com/questions/8779249/how-to-stringify-inherited-objects-to-json

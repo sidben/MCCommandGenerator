@@ -1,13 +1,6 @@
 
 
 
-var txtResult 	= document.getElementById("txtResult");
-var radType 	= document.getElementsByName("radCmdType");
-
-
-
-
-
 function start() {
 	var tempButton = document.getElementById("btDebug");
 
@@ -302,6 +295,7 @@ function showPropertiesBox(boxType) {
 			bSpawnerProps.style.display = 'block';
 			initializeSpawnerProperties();
 			createMobSelector(bMobType);
+			bMobType.scrollIntoView(true);
 			break;
 
 		case 'spawnerCustom':
@@ -309,11 +303,13 @@ function showPropertiesBox(boxType) {
 			bSpawnerProps.style.display = 'block';
 			initializeSpawnerProperties();
 			createMobCustomizer(bMobProps);
+			bMobProps.scrollIntoView(true);
 			break;
 
 		case 'summon':
 			bMobType.style.display = 'block';
 			createMobSelector(bMobType);
+			bMobType.scrollIntoView(true);
 			break;
 
 	}
@@ -334,27 +330,115 @@ function setMainMob(index, customize) {
 		currentSelectedList[j].className = currentSelectedList[j].className.replace('boxSelected', '');
 	}
 
-	//-- add the 'selected' class to the actual selection --
-	document.getElementById("mob" + index).className += ' boxSelected';
 
-	//-- Save what mob was selected --
-	document.getElementById("hfdCurrentMob").value = index;
-	selectedMob = mobList[index];
+	if (index > -1) {
+		// Custom (edit) mob //
+		if (customize === true) {
 
-	//--- add the selected mob to the spawner ---//
-	if (mcCommand.NBTInfo instanceof MinecraftMobSpawner) {
-		mcCommand.NBTInfo.EntityId 	= selectedMob.EntityId;
-		mcCommand.NBTInfo.SpawnData = selectedMob.NBTInfo;
-	}
+			if (mobList[index].FixedPreset) {
+				//-- Clone the mob selected (if it's a fixed preset) --
+				document.getElementById("hfdCurrentMob").value = -1;
 
-	//-- Show the customization/edit box if needed --
-	if (customize === true) {
-		selectedMob.PresetName = 'Custom ' + selectedMob.PresetName;
-		showPropertiesBox('spawnerCustom');
+				selectedMob = cloneStrongType(mobList[index]);
+				selectedMob.PresetName = 'Custom ' + selectedMob.PresetName;
+				selectedMob.FixedPreset = false;
+
+			} else {
+				//-- Load the mob selected (if not fixed preset) --
+				document.getElementById("hfdCurrentMob").value = index;
+				selectedMob = mobList[index];
+
+			}
+
+			//-- Show the customization/edit box --
+			showPropertiesBox('spawnerCustom');
+
+
+		// Standard mob selection with no customization //
+		} else {
+
+			//-- add the 'selected' class to the actual selection --
+			document.getElementById("mob" + index).className += ' boxSelected';
+
+			//-- Save what mob was selected --
+			document.getElementById("hfdCurrentMob").value = index;
+			selectedMob = mobList[index];
+
+
+		}
+
+
+
+			/*
+			console.log(selectedMob);
+			console.log(mobList[index]);
+			console.log(selectedMob == mobList[index]);
+
+			var clonedMob = clone(selectedMob, true);
+			console.log(clonedMob);
+			console.log(selectedMob == clonedMob);
+			*/
+
+
+
+
+
+		//--- add the selected mob to the spawner ---//
+		if (mcCommand.NBTInfo instanceof MinecraftMobSpawner) {
+			mcCommand.NBTInfo.EntityId 	= selectedMob.EntityId;
+			mcCommand.NBTInfo.SpawnData = selectedMob.NBTInfo;
+		}
+
+
+	} else {
+
+		//--- add the selected mob to the spawner ---//
+		if (mcCommand.NBTInfo instanceof MinecraftMobSpawner) {
+			mcCommand.NBTInfo.EntityId 	= '';
+			mcCommand.NBTInfo.SpawnData = undefined;
+		}
+
+
 	}
 
 
 	// TODO: IF IS CUSTOM MOB, CREATE A COPY!!!!!!
+}
+
+
+// Save the custom mob on the list
+function mobPresetSave() {
+	if (!selectedMob) { showErrorMessage("No mob preset was found."); return; }
+	if (selectedMob.FixedPreset) { showErrorMessage("You can't change a fixed preset. Choose another preset name."); return; }
+
+	var selectedIndex = parseInt(document.getElementById("hfdCurrentMob").value);
+
+
+	if (selectedIndex < 0) {
+		// add the mob to the list
+		mobList.push(selectedMob);
+		selectedIndex = mobList.length - 1;
+	}
+
+
+	// show the mob selection page
+	showPropertiesBox('spawnerBasic');
+	setMainMob(selectedIndex, false);
+}
+
+// Removes the current selected preset of the list
+function mobPresetDelete() {
+	if (!selectedMob) { showErrorMessage("No mob preset was found."); return; }
+	if (selectedMob.FixedPreset) { showErrorMessage("You can't exclude a fixed preset."); return; }
+
+	var selectedIndex = parseInt(document.getElementById("hfdCurrentMob").value);
+
+	if (selectedIndex < 0) { showErrorMessage("No preset selected."); return; }
+	mobList.splice(selectedIndex, 1);
+
+	// show the mob selection page
+	showPropertiesBox('spawnerBasic');
+	setMainMob(-1, false);
 }
 
 
@@ -428,6 +512,7 @@ function showErrorMessage(msg) {
 
 function loadMobList() {
 
+	// Basic mobs
 	var vanillaZombie = new MobZombie();
 	var vanillaSkelly = new MobSkeleton();
 	var vanillaSpider = new MobSpider();
@@ -436,27 +521,21 @@ function loadMobList() {
 	var vanillaEnderman = new MobEnderman();
 	var vanillaWitch = new MobWitch();
 
-
-
+	// Custom preset mobs
 	var babyZombie = new MobZombie();
 	babyZombie.PresetName 		= "Baby Zombie"
 	babyZombie.Picture 			= "baby-zombie.jpg"
-	babyZombie.IsVanilla 		= false;
 	babyZombie.NBTInfo.IsBaby	= true;
 
 	var powerCreeper = new MobCreeper();
 	powerCreeper.PresetName 		= "Charged Creeper"
 	powerCreeper.Picture 			= "charged-creeper.jpg"
-	powerCreeper.IsVanilla 			= false;
 	powerCreeper.NBTInfo.powered	= true;
 
 	var witherSkelly = new MobSkeleton();
 	witherSkelly.PresetName 			= "Wither Skeleton"
 	witherSkelly.Picture 				= "wither-skeleton.jpg"
-	witherSkelly.IsVanilla 				= false;
 	witherSkelly.NBTInfo.SkeletonType	= MOB_SKELETON_TYPE_WITHER;
-
-
 
 
 
@@ -490,6 +569,9 @@ var mcCommand = new MinecraftCommand('spawner');
 var mobList = [];
 var selectedMob;
 var cmdTimer;
+
+var txtResult 	= document.getElementById("txtResult");
+var radType 	= document.getElementsByName("radCmdType");
 
 
 window.onload = start();

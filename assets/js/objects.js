@@ -188,11 +188,11 @@ function MinecraftLivingEntity() {
 /*----------------------------------------
 Repesents a type of mob.
 ----------------------------------------*/
-function BaseMob(name, picture, vanilla) {
+function BaseMob(name, picture, fixed) {
 	this.EntityId 		= '';
 	this.PresetName 	= name;
 	this.Picture 		= picture;
-	this.IsVanilla 		= vanilla;
+	this.FixedPreset 	= fixed;
 	this.Category		= MOB_CATEGORY_NEUTRAL;
 
 	//this.NBTInfo			= new MinecraftLivingEntity();
