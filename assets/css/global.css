@@ -1,0 +1,75 @@
+*	 	{ box-sizing: border-box; }
+h1 		{ font: bold 20px arial }
+body 	{ font: normal 14px Calibri; line-height: 130%; }
+footer	{ padding: 25px 10px 15px; text-align: center; font-size: 12px; color: #777; }
+
+
+.clear { clear: both; }
+.boxGeneric { border: 1px solid #ccc; padding: 10px; margin: 8px 0; background: #eee; }
+.formLabel { width: 140px; color: #0051a7; display: inline-block; padding: 4px 0; }
+
+
+
+
+
+#boxCommandType 	{}
+#boxSpawnerCustomizer	{ display: none; }
+
+
+#txtResult	{ width: 100%; height: 50px; background: #111; color: #0f0; padding: 4px; border: 1px solid #000; }
+
+
+
+
+
+/*-- Mob Selector --*/
+#boxMobType 		{ display: none; }
+
+#boxMobType .boxMob { margin: 5px; padding: 0 0 10px; width: 160px; display: inline-block; vertical-align: top; }
+
+.boxPortrait { background: #fff; width: 150px; height: 150px; margin: 2px auto; overflow: hidden; border: 1px solid #ccc; position: relative; cursor: pointer; }
+.boxPortrait img { width: 100%; }
+.boxMob .mobName		{ background: rgba(200,200,200,0.85); color: #333; padding: 5px 10px; text-align: center; position: absolute; bottom: 4%; left: 0; width: 100%; display: none; }
+
+.boxMob .boxCommand { visibility: hidden; }
+.boxCommand span {
+	background: #0051a7; background-repeat: no-repeat; background-position: 0px 0px;
+	border: 1px solid #0051a7; color: #fff; text-align: center;
+	width: 75px; padding: 3px 0 3px 25px; display: inline-block; margin: 1px 2px; cursor: pointer;
+}
+.boxMob .boxCommand .cmdSelect { background-image: url('../images/ico-select.png') }
+.boxMob .boxCommand .cmdEdit { background-image: url('../images/ico-edit.png'); }
+
+.boxMob:hover .mobName 		{ display: block; }
+.boxMob:hover .boxCommand 	{ visibility: visible; }
+
+.boxSelected .boxPortrait	{ border: 3px solid #0051a7;}
+
+
+
+
+
+
+
+/*-- Mob Customizer --*/
+#boxMobCustomizer	{ display: none; }
+
+#boxMobCustomizer .box_specs { float: left; width: 250px; margin-right: 35px; }
+#boxMobCustomizer .box_props { float: left; }
+
+#boxMobHearts	{ padding: 15px 0; width: 220px; margin: auto; text-align: center; }
+#boxMobHearts img { width: 18px; }
+
+#boxMobCustomizer .boxCommand { padding: 20px 0; }
+#boxMobCustomizer .boxCommand span { width: 115px; }
+#boxMobCustomizer .boxCommand span.cmdSave 	{ background-image: url('../images/ico-save.png'); }
+#boxMobCustomizer .boxCommand span.cmdDelete{ background-image: url('../images/ico-delete.png'); }
+
+#prop_global 	{ padding: 0 0 20px; }
+#prop_crep, 
+#prop_endm,
+#prop_skel, 
+#prop_zomb 	{ padding: 0 0 20px; display: none; }
+
+.box_props label:not(.formLabel) { display: inline-block; width: 70px; }
+
