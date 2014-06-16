@@ -51,7 +51,7 @@ function start() {
 
 
 
-	setMainMob(0, true);
+//	setMainMob(0, true);
 }
 
 
@@ -172,7 +172,23 @@ function createMobCustomizer(container) {
 
 
 	//--- unique properties ---
+	document.getElementById("prop_crep").style.display = 'none';
+	document.getElementById("prop_skel").style.display = 'none';
+	document.getElementById("prop_zomb").style.display = 'none';
+	document.getElementById("prop_endm").style.display = 'none';
+
 	switch(selectedMob.EntityId) {
+		case 'Creeper':
+			document.getElementById("prop_crep").style.display = 'block';
+			setRadioValue("radCrepCharged", selectedMob.NBTInfo.powered);
+			document.getElementById("txtCrepFuse").value = selectedMob.NBTInfo.Fuse;
+			break;
+
+		case 'Enderman':
+			document.getElementById("prop_endm").style.display = 'block';
+			fillDropdownItens("ddlEndmBlock", "all")
+			break;
+
 		case 'Skeleton':
 			document.getElementById("prop_skel").style.display = 'block';
 			setRadioValue("radSkelType", selectedMob.NBTInfo.SkeletonType);
@@ -200,96 +216,6 @@ function createMobCustomizer(container) {
 //	console.log(document.getElementById("boxMobType").offsetParent != null);
 
 
-
-
-//	console.log(selectedMob.NBTInfo.Health%2);
-//	function a(x) { console.log('hit'); return ~~x;  }
-
-	//console.log(~~x);
-	//console.log(Math.floor(x));
-	//console.log(x%1);
-
-
-
-/*
-	mobBoxHtml = "<b>Customize your mob:</b><br/>";
-
-	//--- mob picture ---
-	mobBoxHtml += "<div class='boxMob'>";
-
-	mobBoxHtml += "<div class='boxPortrait'>";
-	mobBoxHtml += "<img src='assets/images/" + selectedMob.Picture + "' alt='" + selectedMob.PresetName + "' title='" + selectedMob.PresetName + "' />";
-	mobBoxHtml += "</div>";
-
-	mobBoxHtml += "</div>";
-
-
-	//--- mob properties and modifiers ---
-	mobBoxHtml += "Preset name: <input type='text' value='Custom " +  selectedMob.PresetName + "' /> <br/>"
-
-	mobBoxHtml += "<br/><br/> <b>GLOBAL PROPERTIES</b><br/>"
-	mobBoxHtml += "Health: <input type='text' value='" + selectedMob.NBTInfo.DefaultHealth + "' /> <br/>"
-	mobBoxHtml += "Custom name: <input type='text' /> <br/>"
-	mobBoxHtml += "Custom name visible: YES / NO <br/>"
-	mobBoxHtml += "Can pick up loot: YES / NO <br/>"
-	mobBoxHtml += "Persistent (will not despawn): YES / NO <br/>"
-
-	mobBoxHtml += "<br/><br/> <b>UNIQUE PROPERTIES</b><br/>"
-	switch(selectedMob.EntityId) {
-		case 'Creeper':
-			mobBoxHtml += "Charged: YES / NO <br/>"
-			mobBoxHtml += "Explosion radius: <input type='text' value='3' /> <br/>"
-			mobBoxHtml += "Fuse: <input type='text' value='30' /> ticks <br/>"
-			break;
-
-		case 'Enderman':
-			mobBoxHtml += "Carried block: <input type='text' /> <br/>"
-			break;
-
-		case 'Guast':
-			mobBoxHtml += "Explosion power: <input type='text' value='1' /> <br/>"
-			break;
-
-		case 'PigZombie':
-			mobBoxHtml += "Angry: YES / NO <br/>"
-			break;
-
-		case 'Skeleton':
-			mobBoxHtml += "Type: Regular / Wither / undefined<br/>"
-			break;
-
-		case 'Villager':
-			mobBoxHtml += "Profession: <input type='text' value='1' /> <br/>"
-			break;
-
-		case 'VillagerGolem':
-			mobBoxHtml += "Player created (don't attack players): YES / NO <br/>"
-			break;
-
-		case 'Wolf':
-			mobBoxHtml += "Angry: YES / NO <br/>"
-			break;
-
-		case 'Zombie':
-			mobBoxHtml += "Villager: YES / NO <br/>"
-			mobBoxHtml += "Baby: YES / NO <br/>"
-			mobBoxHtml += "Can break doors: YES / NO <br/>"
-			break;
-
-	}
-
-
-	mobBoxHtml += "<br/><br/> <b>ATTRIBUTES</b><br/>"
-
-	mobBoxHtml += "<br/><br/> <b>EQUIPMENT</b><br/>"
-
-	mobBoxHtml += "<br/><br/> <b>POTION EFFECTS</b><br/>"
-
-
-	mobBoxHtml += "<br/><br/> TODO: save as / reset to default (confirm) / Cancel (confirm)"
-
-	container.innerHTML = mobBoxHtml;
-*/
 }
 
 
@@ -428,7 +354,7 @@ function setMainMob(index, customize) {
 	}
 
 
-	// TODO: IS IS CUSTOM MOB, CREATE A COPY!!!!!!
+	// TODO: IF IS CUSTOM MOB, CREATE A COPY!!!!!!
 }
 
 
@@ -476,6 +402,10 @@ function fillDropdownItens(elementId, listType) {
 		case "foot":
 			break;
 
+		case "all":
+			addDropdownItem(dropdown, "TNT", "tnt");
+			break;
+
 	}
 
 	// TODO: CREATE LIST WITH ALL EQUIPS, EACH ITEM HAVE A 'CATEGORY' TO MATCH THE SWITCH ABOVE
@@ -496,8 +426,68 @@ function showErrorMessage(msg) {
 
 
 
+function loadMobList() {
+
+	var vanillaZombie = new MobZombie();
+	var vanillaSkelly = new MobSkeleton();
+	var vanillaSpider = new MobSpider();
+	var vanillaCrepper = new MobCreeper();
+	var vanillaBlaze = new MobBlaze();
+	var vanillaEnderman = new MobEnderman();
+	var vanillaWitch = new MobWitch();
+
+
+
+	var babyZombie = new MobZombie();
+	babyZombie.PresetName 		= "Baby Zombie"
+	babyZombie.Picture 			= "baby-zombie.jpg"
+	babyZombie.IsVanilla 		= false;
+	babyZombie.NBTInfo.IsBaby	= true;
+
+	var powerCreeper = new MobCreeper();
+	powerCreeper.PresetName 		= "Charged Creeper"
+	powerCreeper.Picture 			= "charged-creeper.jpg"
+	powerCreeper.IsVanilla 			= false;
+	powerCreeper.NBTInfo.powered	= true;
+
+	var witherSkelly = new MobSkeleton();
+	witherSkelly.PresetName 			= "Wither Skeleton"
+	witherSkelly.Picture 				= "wither-skeleton.jpg"
+	witherSkelly.IsVanilla 				= false;
+	witherSkelly.NBTInfo.SkeletonType	= MOB_SKELETON_TYPE_WITHER;
+
+
+
+
+
+	mobList.push(vanillaZombie);
+	mobList.push(vanillaSkelly);
+	mobList.push(vanillaSpider);
+	mobList.push(vanillaCrepper);
+	mobList.push(vanillaEnderman);
+	mobList.push(vanillaWitch);
+	mobList.push(vanillaBlaze);
+
+	mobList.push(babyZombie);
+	mobList.push(powerCreeper);
+	mobList.push(witherSkelly);
+
+
+	/*
+	console.log(mobList.length + " mobs available");
+	for (var i=0; i<mobList.length; i++) {
+		console.log('MOB: ' + mcStringify(mobList[i]));
+	}
+	*/
+
+}
+
+
+
+
 
 var mcCommand = new MinecraftCommand('spawner');
+var mobList = [];
 var selectedMob;
 var cmdTimer;
 
