@@ -11,24 +11,45 @@ var MOB_CATEGORY_PASSIVE	= 1;
 var MOB_CATEGORY_NEUTRAL	= 2;
 var MOB_CATEGORY_HOSTILE	= 3;
 var MOB_CATEGORY_BOSS		= 4;
+var MOB_CATEGORY_UTILITY	= 5;
 
 var MOB_BLAZE_DEFAULT_HEALTH 	= 20;
 
+var MOB_CAVESPIDER_DEFAULT_HEALTH 	= 12;
+
 var MOB_CREEPER_DEFAULT_HEALTH	= 20;
 var MOB_CREEPER_DEFAULT_CHARGED = false;
+var MOB_CREEPER_DEFAULT_RADIUS	= 3;
 var MOB_CREEPER_DEFAULT_FUSE 	= 30;
 
+var MOB_GHAST_DEFAULT_HEALTH 	= 10;
+var MOB_GHAST_DEFAULT_EXPLOSION = 1;
+
 var MOB_ENDERMAN_DEFAULT_HEALTH	= 40;
+
+var MOB_IRONGOLEM_DEFAULT_HEALTH	= 100;
+
+var MOB_SILVERFISH_DEFAULT_HEALTH	= 8;
 
 var MOB_SKELETON_DEFAULT_HEALTH	= 20;
 var MOB_SKELETON_TYPE_NORMAL	= 0;
 var MOB_SKELETON_TYPE_WITHER	= 1;
 
+var MOB_SLIME_SIZE_TINY 		= 0;
+var MOB_SLIME_SIZE_SMALL 		= 1;
+var MOB_SLIME_SIZE_BIG  		= 3;
+
+var MOB_SNOWMAN_DEFAULT_HEALTH	= 4;
+
 var MOB_SPIDER_DEFAULT_HEALTH 	= 16;
 
 var MOB_WITCH_DEFAULT_HEALTH 	= 26;
 
+var MOB_WOLFWILD_DEFAULT_HEALTH	= 8;
+
 var MOB_ZOMBIE_DEFAULT_HEALTH	= 20;
+
+var MOB_ZOMBIEPIG_DEFAULT_HEALTH	= 20;
 
 
 
@@ -200,14 +221,19 @@ function BaseMob(name, picture, fixed) {
 		OBS: Creating a new object here creates some conflit, where multiple
 		instances of MobZombie, MobCreeper, etc share the same NBTInfo property.
 		If the object is created in each child class, there is no problem.
+
+		OBS 2: maybe this was related to the toJSON conflict, need more tests.
 	*/
 	this.NBTInfo		= undefined;
 }
 
 
 
+/*------------------------------ HOSTILE MOBS ------------------------------*/
+
 function MobBlaze() {
 	this.EntityId			= "Blaze";
+	this.Category			= MOB_CATEGORY_HOSTILE;
 
 	this.NBTInfo			= new MinecraftLivingEntity();
 	this.NBTInfo.Health		= MOB_BLAZE_DEFAULT_HEALTH;
@@ -228,6 +254,7 @@ function MobCreeper() {
 	this.NBTInfo.Health		= MOB_CREEPER_DEFAULT_HEALTH;
 
 	this.NBTInfo.powered	= MOB_CREEPER_DEFAULT_CHARGED;
+	this.ExplosionRadius	= MOB_CREEPER_DEFAULT_RADIUS;
 	this.NBTInfo.Fuse		= MOB_CREEPER_DEFAULT_FUSE;
 
 
@@ -236,27 +263,64 @@ function MobCreeper() {
 
 		if (copy.Health	== MOB_CREEPER_DEFAULT_HEALTH) copy.Health = undefined;
 		if (!copy.powered) copy.powered = undefined;
+		if (copy.ExplosionRadius == MOB_CREEPER_DEFAULT_RADIUS) copy.ExplosionRadius = undefined;
 		if (copy.Fuse == MOB_CREEPER_DEFAULT_FUSE) copy.Fuse = undefined;
 
 		return copy;
 	}
 }
 
-function MobEnderman() {
-	this.EntityId			= "Enderman";
+function MobGhast() {
+	this.EntityId			= "Ghast";
+	this.Category			= MOB_CATEGORY_HOSTILE;
 
 	this.NBTInfo			= new MinecraftLivingEntity();
-	this.NBTInfo.Health		= MOB_ENDERMAN_DEFAULT_HEALTH;
+	this.NBTInfo.Health		= MOB_GHAST_DEFAULT_HEALTH;
 
-	this.carried			= undefined;
-	this.carriedData		= undefined;
+	this.ExplosionPower		= MOB_GHAST_DEFAULT_EXPLOSION;
 
 
 	this.NBTInfo.toJSON = function() {
 		var copy = this.makeCopy();
-		if (copy.Health	== MOB_ENDERMAN_DEFAULT_HEALTH) copy.Health = undefined;
+		if (copy.Health	== MOB_GHAST_DEFAULT_HEALTH) copy.Health = undefined;
+		if (copy.ExplosionPower	== MOB_GHAST_DEFAULT_EXPLOSION) copy.ExplosionPower = undefined;
 		return copy;
 	}
+}
+
+function MobMagmaCube() {
+	this.EntityId			= "LavaSlime";
+	this.Category			= MOB_CATEGORY_HOSTILE;
+
+	this.NBTInfo			= new MinecraftLivingEntity();
+	this.NBTInfo.Health		= undefined;	// each magma cube size have a different health
+
+	this.Size				= undefined;
+}
+
+function MobSilverfish() {
+	this.EntityId			= "Silverfish";
+	this.Category			= MOB_CATEGORY_HOSTILE;
+
+	this.NBTInfo			= new MinecraftLivingEntity();
+	this.NBTInfo.Health		= MOB_SILVERFISH_DEFAULT_HEALTH;
+
+
+	this.NBTInfo.toJSON = function() {
+		var copy = this.makeCopy();
+		if (copy.Health	== MOB_SILVERFISH_DEFAULT_HEALTH) copy.Health = undefined;
+		return copy;
+	}
+}
+
+function MobSlime() {
+	this.EntityId			= "Slime";
+	this.Category			= MOB_CATEGORY_HOSTILE;
+
+	this.NBTInfo			= new MinecraftLivingEntity();
+	this.NBTInfo.Health		= undefined;	// each alime size have a different health
+
+	this.Size				= undefined;
 }
 
 function MobSkeleton() {
@@ -277,22 +341,9 @@ function MobSkeleton() {
 	}
 }
 
-function MobSpider() {
-	this.EntityId			= "Spider";
-
-	this.NBTInfo			= new MinecraftLivingEntity();
-	this.NBTInfo.Health		= MOB_SPIDER_DEFAULT_HEALTH;
-
-
-	this.NBTInfo.toJSON = function() {
-		var copy = this.makeCopy();
-		if (copy.Health	== MOB_SPIDER_DEFAULT_HEALTH) copy.Health = undefined;
-		return copy;
-	}
-}
-
 function MobWitch() {
 	this.EntityId			= "Wicth";
+	this.Category			= MOB_CATEGORY_HOSTILE;
 
 	this.NBTInfo			= new MinecraftLivingEntity();
 	this.NBTInfo.Health		= MOB_WITCH_DEFAULT_HEALTH;
@@ -327,8 +378,145 @@ function MobZombie() {
 
 MobBlaze.prototype 		= new BaseMob("Blaze", "blaze.jpg", true);
 MobCreeper.prototype 	= new BaseMob("Creeper", "creeper.jpg", true);
-MobEnderman.prototype 	= new BaseMob("Enderman", "enderman.jpg", true);
+MobGhast.prototype 		= new BaseMob("Ghast", "ghast.jpg", true);
+MobMagmaCube.prototype 	= new BaseMob("Magma Cube", "magma-cube.jpg", true);
+MobSilverfish.prototype = new BaseMob("Silverfish", "silverfish.jpg", true);
+MobSlime.prototype 		= new BaseMob("Slime", "slime.jpg", true);
 MobSkeleton.prototype 	= new BaseMob("Skeleton", "skeleton.jpg", true);
-MobSpider.prototype 	= new BaseMob("Spider", "spider.jpg", true);
 MobWitch.prototype 		= new BaseMob("Witch", "witch.jpg", true);
 MobZombie.prototype 	= new BaseMob("Zombie", "zombie.jpg", true);
+
+
+
+/*------------------------------ NEUTRAL MOBS ------------------------------*/
+
+function MobCaveSpider() {
+	this.EntityId			= "CaveSpider";
+
+	this.NBTInfo			= new MinecraftLivingEntity();
+	this.NBTInfo.Health		= MOB_CAVESPIDER_DEFAULT_HEALTH;
+
+
+	this.NBTInfo.toJSON = function() {
+		var copy = this.makeCopy();
+		if (copy.Health	== MOB_CAVESPIDER_DEFAULT_HEALTH) copy.Health = undefined;
+		return copy;
+	}
+}
+
+function MobSpider() {
+	this.EntityId			= "Spider";
+
+	this.NBTInfo			= new MinecraftLivingEntity();
+	this.NBTInfo.Health		= MOB_SPIDER_DEFAULT_HEALTH;
+
+
+	this.NBTInfo.toJSON = function() {
+		var copy = this.makeCopy();
+		if (copy.Health	== MOB_SPIDER_DEFAULT_HEALTH) copy.Health = undefined;
+		return copy;
+	}
+}
+
+function MobEnderman() {
+	this.EntityId			= "Enderman";
+
+	this.NBTInfo			= new MinecraftLivingEntity();
+	this.NBTInfo.Health		= MOB_ENDERMAN_DEFAULT_HEALTH;
+
+	this.carried			= undefined;
+	this.carriedData		= undefined;
+
+
+	this.NBTInfo.toJSON = function() {
+		var copy = this.makeCopy();
+		if (copy.Health	== MOB_ENDERMAN_DEFAULT_HEALTH) copy.Health = undefined;
+		return copy;
+	}
+}
+
+function MobWolf() {
+	this.EntityId			= "Wolf";
+
+	this.NBTInfo			= new MinecraftLivingEntity();
+	this.NBTInfo.Health		= MOB_WOLFWILD_DEFAULT_HEALTH;
+
+	this.NBTInfo.Angry		= false;
+
+
+	this.NBTInfo.toJSON = function() {
+		var copy = this.makeCopy();
+		if (copy.Health	== MOB_WOLFWILD_DEFAULT_HEALTH) copy.Health = undefined;
+		if (!copy.Angry) copy.Angry = undefined;
+		return copy;
+	}
+}
+
+function MobZombiePigman() {
+	this.EntityId			= "PigZombie";
+
+	this.NBTInfo			= new MinecraftLivingEntity();
+	this.NBTInfo.Health		= MOB_ZOMBIEPIG_DEFAULT_HEALTH;
+
+	this.NBTInfo.IsBaby		= undefined;
+	this.NBTInfo.Anger		= 0;
+
+
+	this.NBTInfo.toJSON = function() {
+		var copy = this.makeCopy();
+		if (copy.Health	== MOB_ZOMBIEPIG_DEFAULT_HEALTH) copy.Health = undefined;
+		if (copy.Anger < 1) copy.Anger = undefined;
+		return copy;
+	}
+}
+
+
+MobCaveSpider.prototype 	= new BaseMob("Cave Spider", "cave-spider.jpg", true);
+MobSpider.prototype 		= new BaseMob("Spider", "spider.jpg", true);
+MobEnderman.prototype 		= new BaseMob("Enderman", "enderman.jpg", true);
+MobWolf.prototype 			= new BaseMob("Wolf", "wolf-wild.jpg", true);
+MobZombiePigman.prototype 	= new BaseMob("Zombie Pigman", "zombie-pigman.jpg", true);
+
+
+
+/*------------------------------ UTILITY MOBS ------------------------------*/
+
+function MobIronGolem() {
+	this.EntityId			= "VillagerGolem";
+	this.Category			= MOB_CATEGORY_UTILITY;
+
+	this.NBTInfo			= new MinecraftLivingEntity();
+	this.NBTInfo.Health		= MOB_IRONGOLEM_DEFAULT_HEALTH;
+
+	this.NBTInfo.PlayerCreated	= false;
+
+
+	this.NBTInfo.toJSON = function() {
+		var copy = this.makeCopy();
+		if (copy.Health	== MOB_IRONGOLEM_DEFAULT_HEALTH) copy.Health = undefined;
+		if (!copy.PlayerCreated) copy.PlayerCreated = undefined;
+		return copy;
+	}
+}
+
+function MobSnowGolem() {
+	this.EntityId			= "SnowMan";
+	this.Category			= MOB_CATEGORY_UTILITY;
+
+	this.NBTInfo			= new MinecraftLivingEntity();
+	this.NBTInfo.Health		= MOB_SNOWMAN_DEFAULT_HEALTH;
+
+
+	this.NBTInfo.toJSON = function() {
+		var copy = this.makeCopy();
+		if (copy.Health	== MOB_SNOWMAN_DEFAULT_HEALTH) copy.Health = undefined;
+		return copy;
+	}
+}
+
+
+MobIronGolem.prototype 		= new BaseMob("Iron Golem", "iron-golem.jpg", true);
+MobSnowGolem.prototype 		= new BaseMob("Snow Golem", "snow-golem.jpg", true);
+
+
+/*------------------------------ PASSIVE MOBS ------------------------------*/

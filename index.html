@@ -44,6 +44,8 @@
 
 				<div class="boxCommand">
 					<span class="cmdSave" onclick="mobPresetSave();">Save Preset</span>
+					<span class="cmdBack" onclick="mobPresetBack();">Back</span><br/>
+					<span class="cmdReset" onclick="mobPresetReset();">Reload</span>
 					<span class="cmdDelete" onclick="mobPresetDelete();">Exclude</span>
 				</div>
 			</div>
@@ -78,6 +80,9 @@
 					<span class="formLabel">Charged:</span>
 					<input type="radio" id="radCrepChargedTrue" name="radCrepCharged" value="true"><label for="radZombBabyTrue">Yes</label> &nbsp;
 					<input type="radio" id="radCrepChargedFalse" name="radCrepCharged" value="false"><label for="radZombBabyFalse">No</label><br/>
+
+					<label for="txtCrepRadius" title="" class="formLabel">Explosion radius:</label>
+					<input type="text" id="txtCrepRadius" /><br/>
 
 					<label for="txtCrepFuse" title="" class="formLabel">Fuse:</label>
 					<input type="text" id="txtCrepFuse" /><br/>
@@ -201,7 +206,7 @@
 
 	<footer>
 		version alpha 0.2 - follow this project on <a href="https://github.com/sidben/MCCommandGenerator" target="_blank">GitHub</a><br/>
-		icons designed by <a href="http://flaticon.com/" target="_blank">Flaticon.com</a><br/>
+		Icons made by <a href="http://www.freepik.com" alt="Freepik.com" target="_blank" title="Freepik.com">Freepik</a> from <a href="http://www.flaticon.com/" title="Flaticon" target="_blank">www.flaticon.com</a><br/>
 		This tool is not supported by Mojang in any way. Minecraft, its images and materials are trademarks and copyrights of Mojang AB.
 	</footer>
 

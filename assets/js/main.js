@@ -174,6 +174,7 @@ function createMobCustomizer(container) {
 		case 'Creeper':
 			document.getElementById("prop_crep").style.display = 'block';
 			setRadioValue("radCrepCharged", selectedMob.NBTInfo.powered);
+			document.getElementById("txtCrepRadius").value = selectedMob.NBTInfo.ExplosionRadius;
 			document.getElementById("txtCrepFuse").value = selectedMob.NBTInfo.Fuse;
 			break;
 
@@ -339,6 +340,9 @@ function setMainMob(index, customize) {
 				//-- Clone the mob selected (if it's a fixed preset) --
 				document.getElementById("hfdCurrentMob").value = -1;
 
+				// Removes the delete button, since the preset is not saved yet
+				document.getElementById("boxMobCustomizer").getElementsByClassName("cmdDelete")[0].style.display = 'none';
+
 				selectedMob = cloneStrongType(mobList[index]);
 				selectedMob.PresetName = 'Custom ' + selectedMob.PresetName;
 				selectedMob.FixedPreset = false;
@@ -359,6 +363,9 @@ function setMainMob(index, customize) {
 
 			//-- add the 'selected' class to the actual selection --
 			document.getElementById("mob" + index).className += ' boxSelected';
+
+			// Show the delete button
+			document.getElementById("boxMobCustomizer").getElementsByClassName("cmdDelete")[0].style.display = 'inline-block';
 
 			//-- Save what mob was selected --
 			document.getElementById("hfdCurrentMob").value = index;
@@ -426,19 +433,33 @@ function mobPresetSave() {
 	setMainMob(selectedIndex, false);
 }
 
+// Go back to the mob selector list
+function mobPresetBack() {
+	if (confirm('Discard all changes and return to the mob selector?')) {
+		showPropertiesBox('spawnerBasic');
+	}
+}
+
+// Discard all changes and reload a 'fresh' preset
+function mobPresetReset() {
+	alert('not implemented');
+}
+
 // Removes the current selected preset of the list
 function mobPresetDelete() {
-	if (!selectedMob) { showErrorMessage("No mob preset was found."); return; }
-	if (selectedMob.FixedPreset) { showErrorMessage("You can't exclude a fixed preset."); return; }
+	if (confirm('Are you sure you want to exclude this preset?')) {
+		if (!selectedMob) { showErrorMessage("No mob preset was found."); return; }
+		if (selectedMob.FixedPreset) { showErrorMessage("You can't exclude a fixed preset."); return; }
 
-	var selectedIndex = parseInt(document.getElementById("hfdCurrentMob").value);
+		var selectedIndex = parseInt(document.getElementById("hfdCurrentMob").value);
 
-	if (selectedIndex < 0) { showErrorMessage("No preset selected."); return; }
-	mobList.splice(selectedIndex, 1);
+		if (selectedIndex < 0) { showErrorMessage("No preset selected."); return; }
+		mobList.splice(selectedIndex, 1);
 
-	// show the mob selection page
-	showPropertiesBox('spawnerBasic');
-	setMainMob(-1, false);
+		// show the mob selection page
+		showPropertiesBox('spawnerBasic');
+		setMainMob(-1, false);
+	}
 }
 
 
@@ -513,13 +534,25 @@ function showErrorMessage(msg) {
 function loadMobList() {
 
 	// Basic mobs
-	var vanillaZombie = new MobZombie();
-	var vanillaSkelly = new MobSkeleton();
-	var vanillaSpider = new MobSpider();
-	var vanillaCrepper = new MobCreeper();
 	var vanillaBlaze = new MobBlaze();
-	var vanillaEnderman = new MobEnderman();
+	var vanillaCrepper = new MobCreeper();
+	var vanillaGhast = new MobGhast();
+	var vanillaMagmaCube = new MobMagmaCube();
+	var vanillaSilverfish = new MobSilverfish();
+	var vanillaSkelly = new MobSkeleton();
+	var vanillaSlime = new MobSlime();
 	var vanillaWitch = new MobWitch();
+	var vanillaZombie = new MobZombie();
+
+	var vanillaCaveSpider = new MobCaveSpider();
+	var vanillaEnderman = new MobEnderman();
+	var vanillaSpider = new MobSpider();
+	var vanillaWolf = new MobWolf();
+	var vanillaZombiePig = new MobZombiePigman();
+
+	var vanillaIronGolem = new MobIronGolem();
+	var vanillaSnowGolem = new MobSnowGolem();
+
 
 	// Custom preset mobs
 	var babyZombie = new MobZombie();
@@ -539,13 +572,24 @@ function loadMobList() {
 
 
 
-	mobList.push(vanillaZombie);
-	mobList.push(vanillaSkelly);
-	mobList.push(vanillaSpider);
-	mobList.push(vanillaCrepper);
-	mobList.push(vanillaEnderman);
-	mobList.push(vanillaWitch);
 	mobList.push(vanillaBlaze);
+	mobList.push(vanillaCrepper);
+	mobList.push(vanillaGhast);
+	mobList.push(vanillaMagmaCube);
+	mobList.push(vanillaSilverfish);
+	mobList.push(vanillaSkelly);
+	mobList.push(vanillaSlime);
+	mobList.push(vanillaWitch);
+	mobList.push(vanillaZombie);
+
+	mobList.push(vanillaCaveSpider);
+	mobList.push(vanillaEnderman);
+	mobList.push(vanillaSpider);
+	mobList.push(vanillaWolf);
+	mobList.push(vanillaZombiePig);
+
+	mobList.push(vanillaIronGolem);
+	mobList.push(vanillaSnowGolem);
 
 	mobList.push(babyZombie);
 	mobList.push(powerCreeper);

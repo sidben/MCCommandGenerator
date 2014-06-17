@@ -22,9 +22,10 @@ alpha 0.2
 - added timer to update the command text output automatically;
 - added support to set and load mob properties on the current selected preset;
 - added interface to customize mob properties;
-- added witch and enderman to the mob list;
 - added ability to save and delete custom presets. Fixed presets can't be removed or changed;
 - added method to clone with 'strong type', so I can clone mobs for custom presets;
+- added fixed presets for all hostile, neutral, passive and utility mobs;
+- added confirmation box on the mob customizer (back and exclude);
 - polished properties interface;
 - resolved conflict with 'cloning' objects creating conflict with spawner checkErrors;	
 - updated 'cloning' methods to support nested objects;
