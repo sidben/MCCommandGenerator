@@ -536,7 +536,9 @@ function loadMobList() {
 	// Basic mobs
 	var vanillaBlaze = new MobBlaze();
 	var vanillaCrepper = new MobCreeper();
+	var vanillaEndermite = new MobEndermite();
 	var vanillaGhast = new MobGhast();
+	var vanillaGuardian = new MobGuardian();
 	var vanillaMagmaCube = new MobMagmaCube();
 	var vanillaSilverfish = new MobSilverfish();
 	var vanillaSkelly = new MobSkeleton();
@@ -570,11 +572,19 @@ function loadMobList() {
 	witherSkelly.Picture 				= "wither-skeleton.jpg"
 	witherSkelly.NBTInfo.SkeletonType	= MOB_SKELETON_TYPE_WITHER;
 
+	var elderGuardian = new MobGuardian();
+	elderGuardian.PresetName	= "Elder Guardian";
+	elderGuardian.Picture 		= "guardian-elder.jpg"
+	elderGuardian.Health		= MOB_GUARDIAN_ELDER_HEALTH;
+	elderGuardian.Elder			= true;
+
 
 
 	mobList.push(vanillaBlaze);
 	mobList.push(vanillaCrepper);
+	mobList.push(vanillaEndermite);
 	mobList.push(vanillaGhast);
+	mobList.push(vanillaGuardian);
 	mobList.push(vanillaMagmaCube);
 	mobList.push(vanillaSilverfish);
 	mobList.push(vanillaSkelly);
@@ -594,6 +604,7 @@ function loadMobList() {
 	mobList.push(babyZombie);
 	mobList.push(powerCreeper);
 	mobList.push(witherSkelly);
+	mobList.push(elderGuardian);
 
 
 	/*

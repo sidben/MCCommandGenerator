@@ -51,6 +51,11 @@ var MOB_ZOMBIE_DEFAULT_HEALTH	= 20;
 
 var MOB_ZOMBIEPIG_DEFAULT_HEALTH	= 20;
 
+var MOB_ENDERMITE_DEFAULT_HEALTH = 8;
+
+var MOB_GUARDIAN_DEFAULT_HEALTH 	= 30;
+var MOB_GUARDIAN_ELDER_HEALTH 		= 80;
+
 
 
 
@@ -270,6 +275,23 @@ function MobCreeper() {
 	}
 }
 
+function MobEndermite() {
+	this.EntityId			= "Endermite";
+	this.Category			= MOB_CATEGORY_HOSTILE;
+
+	this.NBTInfo			= new MinecraftLivingEntity();
+	this.NBTInfo.Health		= MOB_ENDERMITE_DEFAULT_HEALTH;
+
+	// this.Lifetime			= 0		// auto-despawns when reaches 2400 ticks
+
+
+	this.NBTInfo.toJSON = function() {
+		var copy = this.makeCopy();
+		if (copy.Health	== MOB_ENDERMITE_DEFAULT_HEALTH) copy.Health = undefined;
+		return copy;
+	}
+}
+
 function MobGhast() {
 	this.EntityId			= "Ghast";
 	this.Category			= MOB_CATEGORY_HOSTILE;
@@ -284,6 +306,25 @@ function MobGhast() {
 		var copy = this.makeCopy();
 		if (copy.Health	== MOB_GHAST_DEFAULT_HEALTH) copy.Health = undefined;
 		if (copy.ExplosionPower	== MOB_GHAST_DEFAULT_EXPLOSION) copy.ExplosionPower = undefined;
+		return copy;
+	}
+}
+
+function MobGuardian() {
+	this.EntityId			= "Guardian";
+	this.Category			= MOB_CATEGORY_HOSTILE;
+
+	this.NBTInfo			= new MinecraftLivingEntity();
+	this.NBTInfo.Health		= MOB_GUARDIAN_DEFAULT_HEALTH;
+
+	this.NBTInfo.Elder		= false;
+
+
+	this.NBTInfo.toJSON = function() {
+		var copy = this.makeCopy();
+		if (!copy.Elder && copy.Health == MOB_GUARDIAN_DEFAULT_HEALTH) copy.Health = undefined;
+		if (copy.Elder && copy.Health == MOB_GUARDIAN_ELDER_HEALTH) copy.Health = undefined;
+		if (!copy.Elder) copy.Elder = undefined;
 		return copy;
 	}
 }
@@ -378,7 +419,9 @@ function MobZombie() {
 
 MobBlaze.prototype 		= new BaseMob("Blaze", "blaze.jpg", true);
 MobCreeper.prototype 	= new BaseMob("Creeper", "creeper.jpg", true);
+MobEndermite.prototype 	= new BaseMob("Endermite", "endermite.jpg", true);
 MobGhast.prototype 		= new BaseMob("Ghast", "ghast.jpg", true);
+MobGuardian.prototype 	= new BaseMob("Guardian", "guardian.jpg", true);
 MobMagmaCube.prototype 	= new BaseMob("Magma Cube", "magma-cube.jpg", true);
 MobSilverfish.prototype = new BaseMob("Silverfish", "silverfish.jpg", true);
 MobSlime.prototype 		= new BaseMob("Slime", "slime.jpg", true);
