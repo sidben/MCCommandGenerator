@@ -258,9 +258,9 @@ function MobCreeper() {
 	this.NBTInfo			= new MinecraftLivingEntity();
 	this.NBTInfo.Health		= MOB_CREEPER_DEFAULT_HEALTH;
 
-	this.NBTInfo.powered	= MOB_CREEPER_DEFAULT_CHARGED;
-	this.ExplosionRadius	= MOB_CREEPER_DEFAULT_RADIUS;
-	this.NBTInfo.Fuse		= MOB_CREEPER_DEFAULT_FUSE;
+	this.NBTInfo.powered			= MOB_CREEPER_DEFAULT_CHARGED;
+	this.NBTInfo.ExplosionRadius	= MOB_CREEPER_DEFAULT_RADIUS;
+	this.NBTInfo.Fuse				= MOB_CREEPER_DEFAULT_FUSE;
 
 
 	this.NBTInfo.toJSON = function() {
@@ -282,7 +282,7 @@ function MobEndermite() {
 	this.NBTInfo			= new MinecraftLivingEntity();
 	this.NBTInfo.Health		= MOB_ENDERMITE_DEFAULT_HEALTH;
 
-	// this.Lifetime			= 0		// auto-despawns when reaches 2400 ticks
+	// this.NBTInfo.Lifetime			= 0		// auto-despawns when reaches 2400 ticks
 
 
 	this.NBTInfo.toJSON = function() {
@@ -299,7 +299,7 @@ function MobGhast() {
 	this.NBTInfo			= new MinecraftLivingEntity();
 	this.NBTInfo.Health		= MOB_GHAST_DEFAULT_HEALTH;
 
-	this.ExplosionPower		= MOB_GHAST_DEFAULT_EXPLOSION;
+	this.NBTInfo.ExplosionPower		= MOB_GHAST_DEFAULT_EXPLOSION;
 
 
 	this.NBTInfo.toJSON = function() {
@@ -322,8 +322,14 @@ function MobGuardian() {
 
 	this.NBTInfo.toJSON = function() {
 		var copy = this.makeCopy();
+		/*
 		if (!copy.Elder && copy.Health == MOB_GUARDIAN_DEFAULT_HEALTH) copy.Health = undefined;
 		if (copy.Elder && copy.Health == MOB_GUARDIAN_ELDER_HEALTH) copy.Health = undefined;
+
+		OBS: the code above don't work right now (14w25b) because all guardians summoned by commands spawn with the same health
+		*/
+
+		if (copy.Health == MOB_GUARDIAN_DEFAULT_HEALTH) copy.Health = undefined;
 		if (!copy.Elder) copy.Elder = undefined;
 		return copy;
 	}
@@ -336,7 +342,7 @@ function MobMagmaCube() {
 	this.NBTInfo			= new MinecraftLivingEntity();
 	this.NBTInfo.Health		= undefined;	// each magma cube size have a different health
 
-	this.Size				= undefined;
+	this.NBTInfo.Size		= undefined;
 }
 
 function MobSilverfish() {
@@ -361,7 +367,7 @@ function MobSlime() {
 	this.NBTInfo			= new MinecraftLivingEntity();
 	this.NBTInfo.Health		= undefined;	// each alime size have a different health
 
-	this.Size				= undefined;
+	this.NBTInfo.Size		= undefined;
 }
 
 function MobSkeleton() {
@@ -467,8 +473,8 @@ function MobEnderman() {
 	this.NBTInfo			= new MinecraftLivingEntity();
 	this.NBTInfo.Health		= MOB_ENDERMAN_DEFAULT_HEALTH;
 
-	this.carried			= undefined;
-	this.carriedData		= undefined;
+	this.NBTInfo.carried			= undefined;
+	this.NBTInfo.carriedData		= undefined;
 
 
 	this.NBTInfo.toJSON = function() {

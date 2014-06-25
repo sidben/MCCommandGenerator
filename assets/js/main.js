@@ -573,10 +573,10 @@ function loadMobList() {
 	witherSkelly.NBTInfo.SkeletonType	= MOB_SKELETON_TYPE_WITHER;
 
 	var elderGuardian = new MobGuardian();
-	elderGuardian.PresetName	= "Elder Guardian";
-	elderGuardian.Picture 		= "guardian-elder.jpg"
-	elderGuardian.Health		= MOB_GUARDIAN_ELDER_HEALTH;
-	elderGuardian.Elder			= true;
+	elderGuardian.PresetName		= "Elder Guardian";
+	elderGuardian.Picture 			= "guardian-elder.jpg"
+	elderGuardian.NBTInfo.Health	= MOB_GUARDIAN_ELDER_HEALTH;
+	elderGuardian.NBTInfo.Elder		= true;
 
 
 
